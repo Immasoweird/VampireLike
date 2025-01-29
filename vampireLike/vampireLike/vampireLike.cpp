@@ -35,7 +35,6 @@ public:
 	int attackRange = 10;
 
 	void Control() {
-		//qwerty
 		if (IsKeyDown(KEY_D)) position.x += speed;
 		if (IsKeyDown(KEY_A)) position.x -= speed;
 		if (IsKeyDown(KEY_W)) position.y -= speed;
@@ -74,14 +73,14 @@ int main() {
 	}
 	CloseWindow();
 }
-#pragma region Init
+
 
 void InitGame() {
 	score = 0;
 	gameOver = false;
 }
 
-#pragma endregion
+
 
 void UpdateGame() {
 	player.Control();
@@ -107,5 +106,3 @@ void DrawGame() {
 void UnloadGame() {
 	//UnloadTexture
 }
-//УУУУУУУУУУУУУУУУУУУУУАААААААААААААААААААААААААА
-//some funny little comment
