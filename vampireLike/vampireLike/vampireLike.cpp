@@ -91,4 +91,5 @@ void DrawGame() {
 void UnloadGame() {
 	//UnloadTexture
 }
-УУУУУУУУУУУУУУУУУУУУУАААААААААААААААААААААААААА
+//УУУУУУУУУУУУУУУУУУУУУАААААААААААААААААААААААААА
+//some funny little comment
