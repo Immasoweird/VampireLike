@@ -17,10 +17,25 @@ class Player {
 public:
 	Vector2 position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	Vector2 size = { 100, 100 };
-	float speed = 10;
-	int health;
+	float speed = 3;
+	int lvl = 1;
+	int health = 100;
+	float hpRegen = 0.5;
+	int armor = 10;
+
+	int luck = 0;
+	float evasion = 0; // percent 
+	float lifesteal = 1; // percent 
+	float collectArea = 0; // percent 
+
+	int damage = 1;
+	float critDamage = 50; // percent 
+	float critChance = 5; // percent 
+	int attackSpeed = 1;
+	int attackRange = 10;
 
 	void Control() {
+		//qwerty
 		if (IsKeyDown(KEY_D)) position.x += speed;
 		if (IsKeyDown(KEY_A)) position.x -= speed;
 		if (IsKeyDown(KEY_W)) position.y -= speed;
