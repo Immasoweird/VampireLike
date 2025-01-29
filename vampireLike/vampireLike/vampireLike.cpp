@@ -45,6 +45,7 @@ public:
 		if (position.x > (SCREEN_WIDTH - 110)) position.x -= speed;
 		if (position.y < 0) position.y += speed;
 		if (position.y > (SCREEN_HEIGHT - 110)) position.y -= speed;
+
 	}
 }player;
 
@@ -106,3 +107,5 @@ void DrawGame() {
 void UnloadGame() {
 	//UnloadTexture
 }
+//УУУУУУУУУУУУУУУУУУУУУАААААААААААААААААААААААААА
+//some funny little comment
