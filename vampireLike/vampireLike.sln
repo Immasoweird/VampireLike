@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35122.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vampireLike", "vampireLike\vampireLike.vcxproj", "{468BAC2D-3812-41CC-BA9A-A2186CEEC582}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{468BAC2D-3812-41CC-BA9A-A2186CEEC582}.Debug|x64.ActiveCfg = Debug|x64
+		{468BAC2D-3812-41CC-BA9A-A2186CEEC582}.Debug|x64.Build.0 = Debug|x64
+		{468BAC2D-3812-41CC-BA9A-A2186CEEC582}.Debug|x86.ActiveCfg = Debug|Win32
+		{468BAC2D-3812-41CC-BA9A-A2186CEEC582}.Debug|x86.Build.0 = Debug|Win32
+		{468BAC2D-3812-41CC-BA9A-A2186CEEC582}.Release|x64.ActiveCfg = Release|x64
+		{468BAC2D-3812-41CC-BA9A-A2186CEEC582}.Release|x64.Build.0 = Release|x64
+		{468BAC2D-3812-41CC-BA9A-A2186CEEC582}.Release|x86.ActiveCfg = Release|Win32
+		{468BAC2D-3812-41CC-BA9A-A2186CEEC582}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3B8FE2EC-D959-4C72-BDB8-560C56C3D202}
+	EndGlobalSection
+EndGlobal
