@@ -32,7 +32,7 @@ public:
 	float critDamage = 50; // percent 
 	float critChance = 5; // percent 
 	int attackSpeed = 1;
-	int attackRange = 10;
+	int attackRange = 100;
 
 	//dash
 	bool isDashing = false; // Отслеживание состояния рывка
@@ -89,9 +89,11 @@ public:
 
 	}
 
+
 	void Draw() {
-		DrawRectangleV(position, size, GOLD);
-	}
+		DrawCircleV(position+size/2, attackRange, RED); // Коллизия радиуса атаки
+		DrawRectangleV(position, size, GOLD); //Коллизия игрока
+	} 
 
 }player;
 
