@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include <vector>
 #include <raymath.h>
+#include <map>
 using namespace std;
 
 
@@ -9,15 +10,29 @@ using namespace std;
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 
-int score;
-bool gameOver;
+// Классы
+class Gamestate {
+public:
+	int score;
+	bool gameOver;
+}gamestate;
+
+class WeaponList {
+public:
+	map<string, int> weapon = {
+		{"claymore", 1},
+		{"bow", 2},
+		{"axe", 3},
+	};
+
+};
 
 //classes
 class Player {
 public:
 	Vector2 position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	Vector2 size = { 100, 100 };
-	float speed = 300;
+	float speed = 700;
 	int lvl = 1;
 	int health = 100;
 	float hpRegen = 0.5;
@@ -37,7 +52,7 @@ public:
 	//dash
 	bool isDashing = false; // Отслеживание состояния рывка
 	float dashDuration = 0.15f; 
-	float dashSpeed = 1000.0f;
+	float dashSpeed = 1500.0f;
 	float dashCooldown = 0.8f;
 	float cooldownTimer = 0.0f; // Таймер для отслеживания времени восстановления
 	float dashTimer = 0.0f;     // Таймер для отслеживания времени рывка
@@ -97,6 +112,13 @@ public:
 
 }player;
 
+struct TextureInfo {
+	Texture2D texture;           // Текстура
+	Vector2 position;            // Позиция на экране
+};
+
+// Текстуры
+TextureInfo background;
 
 
 // declare funcs 
@@ -118,40 +140,42 @@ int main() {
 		UpdateGame();
 		DrawGame();
 
-		if (gameOver) InitGame();
+		if (gamestate.gameOver) InitGame();
 	}
 	CloseWindow();
 }
 
 
 void InitGame() {
-	score = 0;
-	gameOver = false;
+	gamestate.score = 0;
+	gamestate.gameOver = false;
+	LoadTextures();
 }
 
 
 
 void UpdateGame() {
 	player.Update();
-	if (gameOver) return;
+	if (gamestate.gameOver) return;
 }
 
 void LoadTextures() {
-
+	Image image1 = LoadImage("F:\aC++\GITHUB\VampireLike\vampireLike\vampireLike\assets\Backgroundbackground.jpg");
+	background.texture = LoadTextureFromImage(image1);
+	background.position = { SCREEN_WIDTH, SCREEN_HEIGHT };
+	UnloadImage(image1);
 }
 
 void DrawGame() {
 	BeginDrawing();
 	ClearBackground(DARKGRAY);
+	DrawTextureV(background.texture, background.position, WHITE);
 	player.Draw();
 
 	EndDrawing();
 
-
-
-	UpdateGame();
 }
 
 void UnloadGame() {
-	//UnloadTexture
+	UnloadTexture(background.texture);
 }
