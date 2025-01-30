@@ -33,19 +33,24 @@ public:
 	float critChance = 5; // percent 
 	int attackSpeed = 1;
 	int attackRange = 10;
+	void Update() {
+		if (IsKeyDown(KEY_D) or IsKeyDown(KEY_RIGHT)) position.x += speed;
+		if (IsKeyDown(KEY_A) or IsKeyDown(KEY_LEFT)) position.x -= speed;
+		if (IsKeyDown(KEY_W) or IsKeyDown(KEY_UP)) position.y -= speed;
+		if (IsKeyDown(KEY_S) or IsKeyDown(KEY_DOWN)) position.y += speed;
 
-	void Control() {
-		if (IsKeyDown(KEY_D)) position.x += speed;
-		if (IsKeyDown(KEY_A)) position.x -= speed;
-		if (IsKeyDown(KEY_W)) position.y -= speed;
-		if (IsKeyDown(KEY_S)) position.y += speed;
-
-		if (position.x < 0) position.x += speed;
-		if (position.x > (SCREEN_WIDTH - 110)) position.x -= speed;
-		if (position.y < 0) position.y += speed;
-		if (position.y > (SCREEN_HEIGHT - 110)) position.y -= speed;
-
+		position.x = Clamp(position.x, 0, SCREEN_WIDTH - size.x); //Screen Limitation X.pos
+		position.y = Clamp(position.y, 0, SCREEN_HEIGHT - size.y); // Screen Limitation Y.pos
+			//if (position.x < 0) position.x += speed;
+			//if (position.x > (SCREEN_WIDTH - 110)) position.x -= speed;
+			//if (position.y < 0) position.y += speed;
+			//if (position.y > (SCREEN_HEIGHT - 110)) position.y -= speed;
 	}
+
+	void Draw() {
+		DrawRectangleV(player.position, player.size, GOLD);
+	}
+
 }player;
 
 
@@ -83,7 +88,7 @@ void InitGame() {
 
 
 void UpdateGame() {
-	player.Control();
+	player.Update();
 	if (gameOver) return;
 }
 
@@ -94,7 +99,7 @@ void LoadTextures() {
 void DrawGame() {
 	BeginDrawing();
 	ClearBackground(DARKGRAY);
-	DrawRectangleV(player.position, player.size, GOLD);
+	player.Draw();
 
 	EndDrawing();
 
