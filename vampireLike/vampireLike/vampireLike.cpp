@@ -160,10 +160,12 @@ void UpdateGame() {
 }
 
 void LoadTextures() {
-	Image image1 = LoadImage("F:\aC++\GITHUB\VampireLike\vampireLike\vampireLike\assets\Backgroundbackground.jpg");
+	Image image1 = LoadImage("F:/aC++/GITHUB/VampireLike/vampireLike/vampireLike/assets/Background/background.jpg");
+	ImageResize(&image1, SCREEN_WIDTH, SCREEN_HEIGHT);
 	background.texture = LoadTextureFromImage(image1);
-	background.position = { SCREEN_WIDTH, SCREEN_HEIGHT };
+	background.position = { 0, 0 };
 	UnloadImage(image1);
+
 }
 
 void DrawGame() {
