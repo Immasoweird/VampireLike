@@ -27,7 +27,7 @@ public:
 class WeaponList {
 public:
 	map<string, int> weapon = {
-		{"claymore", 1},
+		{"sword", 1},
 		{"bow", 2},
 		{"axe", 3},
 	};
