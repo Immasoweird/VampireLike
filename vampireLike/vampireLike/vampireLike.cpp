@@ -13,8 +13,15 @@ const int SCREEN_HEIGHT = 900;
 // Классы
 class Gamestate {
 public:
+	Camera2D camera; // Глобальная переменная камеры
 	int score;
 	bool gameOver;
+
+	void fullscrean() {
+		if (IsKeyReleased(KEY_F11)) {
+			ToggleBorderlessWindowed();
+		}
+	}
 }gamestate;
 
 class WeaponList {
@@ -74,8 +81,8 @@ public:
 		position.x += direction.x * speed * deltaTime;
 		position.y += direction.y * speed * deltaTime;
 
-		position.x = Clamp(position.x, 0, SCREEN_WIDTH - size.x); // Ограничение экрана по X
-		position.y = Clamp(position.y, 0, SCREEN_HEIGHT - size.y); // Ограничение экрана по Y
+		//position.x = Clamp(position.x, 0, SCREEN_WIDTH - size.x); // Ограничение экрана по X
+		//position.y = Clamp(position.y, 0, SCREEN_HEIGHT - size.y); // Ограничение экрана по Y
 
 		// Логика рывка
 		if (IsKeyPressed(KEY_SPACE) and cooldownTimer <= 0 and !isDashing) {
@@ -133,7 +140,6 @@ void UnloadGame();
 int main() {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Devil May Cry 9");
 	SetTargetFPS(165);
-
 	InitGame();
 
 	while (!WindowShouldClose()) {
@@ -147,6 +153,11 @@ int main() {
 
 
 void InitGame() {
+	// Инициализация камеры
+	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
+	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
+	gamestate.camera.zoom = 0.1f;
+
 	gamestate.score = 0;
 	gamestate.gameOver = false;
 	LoadTextures();
@@ -155,15 +166,20 @@ void InitGame() {
 
 
 void UpdateGame() {
+	gamestate.fullscrean();
 	player.Update();
 	if (gamestate.gameOver) return;
+
+	// Обновление камеры (после движения игрока)
+	Vector2 desiredTarget = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
+	gamestate.camera.target = Vector2Lerp(gamestate.camera.target, desiredTarget, 0.1f); // Плавное преследование
 }
 
 void LoadTextures() {
 	Image image1 = LoadImage("F:/aC++/GITHUB/VampireLike/vampireLike/vampireLike/assets/Background/background.jpg");
-	ImageResize(&image1, SCREEN_WIDTH, SCREEN_HEIGHT);
+	ImageResize(&image1, 10000, 10000);
 	background.texture = LoadTextureFromImage(image1);
-	background.position = { 0, 0 };
+	background.position = { -5000, -5000 };
 	UnloadImage(image1);
 
 }
@@ -171,8 +187,16 @@ void LoadTextures() {
 void DrawGame() {
 	BeginDrawing();
 	ClearBackground(DARKGRAY);
-	DrawTextureV(background.texture, background.position, WHITE);
-	player.Draw();
+
+
+	BeginMode2D(gamestate.camera);
+	{
+		DrawTextureV(background.texture, background.position, WHITE);
+		player.Draw();
+		// Здесь будут другие объекты (враги, предметы)
+	}
+	EndMode2D();
+
 
 	EndDrawing();
 
