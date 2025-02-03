@@ -112,22 +112,22 @@ public:
 		Rectangle playerRect = { position.x, position.y, size.x, size.y };
 		Rectangle testRect = { 500, 500, 200, 200 };
 		
-		if (CheckCollisionRecs(playerRect, testRect)) {
-			printf("daoiwhfdoawihfoiawhfoiawhfoiawfhoiwaqfho\n");
-		}
+		//if (CheckCollisionRecs(playerRect, testRect)) {
+		//	printf("daoiwhfdoawihfoiawhfoiawhfoiawfhoiwaqfho\n");
+		//}
 
-		if (CheckCollisionCircleRec(position + size / 2, attackRange, testRect)) {
-			printf("111111111111111111111111111111\n");
-			float distance = Vector2Distance( );
+		//if (CheckCollisionCircleRec(position + size / 2, attackRange, testRect)) {
+		//	printf("111111111111111111111111111111\n");
+		//	float distance = Vector2Distance( );
 
-			// Проверяем, находится ли объект в области коллизии
-			if (distance <= collisionRadius)
-		}
+		//	// Проверяем, находится ли объект в области коллизии
+		//	if (distance <= collisionRadius)
+		//}
 	}
 
 
 	void Draw() {
-		DrawCircleV(position + size / 2, attackRange, RED); // Коллизия радиуса атаки
+		DrawCircleV(Vector2Add(position, Vector2Scale(size, 0.5f)), attackRange, RED);//Коллизия атаки 
 		DrawRectangleV(position, size, GOLD); //Коллизия игрока
 		DrawRectangle(500, 500, 200, 200, BLUE);
 	}
@@ -214,7 +214,7 @@ void UpdateGame() {
 }
 
 void LoadTextures() {
-	Image image1 = LoadImage("F:/aC++/GITHUB/VampireLike/vampireLike/vampireLike/assets/Background/background.jpg");
+	Image image1 = LoadImage("./assets/Background/background.jpg");
 	ImageResize(&image1, 10000, 10000);
 	background.texture = LoadTextureFromImage(image1);
 	background.position = { -5000, -5000 };
