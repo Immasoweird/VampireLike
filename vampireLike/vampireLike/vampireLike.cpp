@@ -34,12 +34,23 @@ public:
 
 };
 
+struct Circle {
+	Vector2 center;
+	float radius;
+	Color color;
+};
 //classes
 class Player {
+private:
+	void DrawAuraCirlce() {
+		DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
+	}
 public:
 	Vector2 position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-	Vector2 size = { 100, 100 };
+	Circle damageAura = { {position.x + 50, position.y+50},200,RED };  
+	Vector2 size = { 100,100 };
 	float speed = 700;
+	int attackRange = 200;
 	int lvl = 1;
 	int health = 100;
 	float hpRegen = 0.5;
@@ -55,7 +66,6 @@ public:
 	float critDamage = 50; // percent 
 	float critChance = 5; // percent 
 	int attackSpeed = 1;
-	int attackRange = 200;
 
 	//dash
 	bool isDashing = false; // Отслеживание состояния рывка
@@ -81,7 +91,7 @@ public:
 		// Применение скорости к нормализованному вектору
 		position.x += direction.x * speed * deltaTime;
 		position.y += direction.y * speed * deltaTime;
-
+		damageAura.center = Vector2Add(position,Vector2Scale(size,0.5f));
 		//position.x = Clamp(position.x, 0, SCREEN_WIDTH - size.x); // Ограничение экрана по X
 		//position.y = Clamp(position.y, 0, SCREEN_HEIGHT - size.y); // Ограничение экрана по Y
 
@@ -112,41 +122,33 @@ public:
 		Rectangle playerRect = { position.x, position.y, size.x, size.y };
 		Rectangle testRect = { 500, 500, 200, 200 };
 		
-		//if (CheckCollisionRecs(playerRect, testRect)) {
-		//	printf("daoiwhfdoawihfoiawhfoiawhfoiawfhoiwaqfho\n");
-		//}
 
-		//if (CheckCollisionCircleRec(position + size / 2, attackRange, testRect)) {
-		//	printf("111111111111111111111111111111\n");
-		//	float distance = Vector2Distance( );
-
-		//	// Проверяем, находится ли объект в области коллизии
-		//	if (distance <= collisionRadius)
-		//}
 	}
 
 
 	void Draw() {
-		DrawCircleV(Vector2Add(position, Vector2Scale(size, 0.5f)), attackRange, RED);//Коллизия атаки 
-		DrawRectangleV(position, size, GOLD); //Коллизия игрока
-		DrawRectangle(500, 500, 200, 200, BLUE);
+		DrawAuraCirlce(); //Аура
+		DrawRectangleV(position, size, GOLD); //Игрок
 	}
 
-}player;
+}; /////
 
 struct TextureInfo {
 	Texture2D texture;           // Текстура
 	Vector2 position;            // Позиция на экране
 };
 
-struct Circle {
-	Vector2 center;
-	float radius;
-};
 
+struct Enemy_s {
+	Rectangle body;
+	Color color;
+	Vector2 speed;
+	float health;
+};
 // Текстуры
 TextureInfo background;
-
+Enemy_s enemy = {};
+Player player = {};
 
 // declare funcs 
 void InitGame();
@@ -155,7 +157,12 @@ void UpdateGame();
 void DrawGame();
 void UnloadGame();
 
-
+void CheckCollisionAreaEnemy(Enemy_s& enemy_p, Circle& dmgArea) {
+	if (CheckCollisionCircleRec(dmgArea.center, dmgArea.radius,enemy_p.body)) {
+		enemy_p.health -= player.damage;
+		cout << enemy_p.health;
+	}
+}
 
 int main() {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Devil May Cry 9");
@@ -177,6 +184,14 @@ void InitGame() {
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
 	gamestate.camera.zoom = 0.5f;
+
+	// Инициализация врага
+	enemy.body = { 500, 500, 200, 200};
+	enemy.speed = { 10, 10 };
+	enemy.color = BLUE;
+	enemy.health = 1000;
+
+
 
 	gamestate.score = 0;
 	gamestate.gameOver = false;
@@ -211,10 +226,14 @@ void UpdateGame() {
 	gamestate.camera.target.y = Clamp(gamestate.camera.target.y,
 		minBounds.y + gamestate.camera.offset.y,
 		maxBounds.y - gamestate.camera.offset.y);
+
+
+	// Проверка на столкновение врага и dmgArea
+	CheckCollisionAreaEnemy(enemy, player.damageAura);
 }
 
 void LoadTextures() {
-	Image image1 = LoadImage("./assets/Background/background.jpg");
+	Image image1 = LoadImage("C:\\Users\\Academy\\Desktop\\VampireLike\\VampireLike\\vampireLike\\vampireLike\\assets\\Background\\background.png");
 	ImageResize(&image1, 10000, 10000);
 	background.texture = LoadTextureFromImage(image1);
 	background.position = { -5000, -5000 };
@@ -229,8 +248,11 @@ void DrawGame() {
 
 	BeginMode2D(gamestate.camera);
 	{
+
 		DrawTextureV(background.texture, background.position, WHITE);
 		player.Draw();
+		DrawRectangleRec(enemy.body,enemy.color);
+		
 		// Здесь будут другие объекты (враги, предметы)
 	}
 	EndMode2D();
