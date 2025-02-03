@@ -46,6 +46,7 @@ public:
 	int armor = 10;
 
 	int luck = 0;
+	int reroll = 0;
 	float evasion = 0; // percent 
 	float lifesteal = 1; // percent 
 	float collectArea = 0; // percent 
@@ -54,11 +55,11 @@ public:
 	float critDamage = 50; // percent 
 	float critChance = 5; // percent 
 	int attackSpeed = 1;
-	int attackRange = 100;
+	int attackRange = 200;
 
 	//dash
 	bool isDashing = false; // Отслеживание состояния рывка
-	float dashDuration = 0.15f; 
+	float dashDuration = 0.15f;
 	float dashSpeed = 1500.0f;
 	float dashCooldown = 0.8f;
 	float cooldownTimer = 0.0f; // Таймер для отслеживания времени восстановления
@@ -108,20 +109,39 @@ public:
 		}
 
 
+		Rectangle playerRect = { position.x, position.y, size.x, size.y };
+		Rectangle testRect = { 500, 500, 200, 200 };
+		
+		if (CheckCollisionRecs(playerRect, testRect)) {
+			printf("daoiwhfdoawihfoiawhfoiawhfoiawfhoiwaqfho\n");
+		}
 
+		if (CheckCollisionCircleRec(position + size / 2, attackRange, testRect)) {
+			printf("111111111111111111111111111111\n");
+			float distance = Vector2Distance( );
+
+			// Проверяем, находится ли объект в области коллизии
+			if (distance <= collisionRadius)
+		}
 	}
 
 
 	void Draw() {
-		DrawCircleV(position+size/2, attackRange, RED); // Коллизия радиуса атаки
+		DrawCircleV(position + size / 2, attackRange, RED); // Коллизия радиуса атаки
 		DrawRectangleV(position, size, GOLD); //Коллизия игрока
-	} 
+		DrawRectangle(500, 500, 200, 200, BLUE);
+	}
 
 }player;
 
 struct TextureInfo {
 	Texture2D texture;           // Текстура
 	Vector2 position;            // Позиция на экране
+};
+
+struct Circle {
+	Vector2 center;
+	float radius;
 };
 
 // Текстуры
@@ -156,7 +176,7 @@ void InitGame() {
 	// Инициализация камеры
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
-	gamestate.camera.zoom = 0.1f;
+	gamestate.camera.zoom = 0.5f;
 
 	gamestate.score = 0;
 	gamestate.gameOver = false;
@@ -168,11 +188,29 @@ void InitGame() {
 void UpdateGame() {
 	gamestate.fullscrean();
 	player.Update();
+	Vector2 mousePosition = GetMousePosition();
+	
+	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+		printf("Mouse Position: X = %d, Y = %d\n", (int)mousePosition.x, (int)mousePosition.y); //для упрощения отрисовки координат в дальнейшем
+	}
+
 	if (gamestate.gameOver) return;
 
 	// Обновление камеры (после движения игрока)
 	Vector2 desiredTarget = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
 	gamestate.camera.target = Vector2Lerp(gamestate.camera.target, desiredTarget, 0.1f); // Плавное преследование
+
+	// После Lerp добавьте ограничения (пример):
+	Vector2 minBounds = { -5000, -5000 };            // Левый верхний угол уровня
+	Vector2 maxBounds = { 5000, 5000 };      // Правый нижний угол уровня
+
+	gamestate.camera.target.x = Clamp(gamestate.camera.target.x,
+		minBounds.x + gamestate.camera.offset.x,
+		maxBounds.x - gamestate.camera.offset.x);
+
+	gamestate.camera.target.y = Clamp(gamestate.camera.target.y,
+		minBounds.y + gamestate.camera.offset.y,
+		maxBounds.y - gamestate.camera.offset.y);
 }
 
 void LoadTextures() {
