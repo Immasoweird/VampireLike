@@ -48,7 +48,7 @@ private:
 	}
 public:
 	Vector2 position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-	Circle damageAura = { {position.x + 50, position.y + 50},200,RED };
+	Circle damageAura = { {position.x + 50, position.y+50},200,RED };  
 	Vector2 size = { 100,100 };
 	float speed = 700;
 	int attackRange = 200;
@@ -92,7 +92,7 @@ public:
 		// Применение скорости к нормализованному вектору
 		position.x += direction.x * speed * deltaTime;
 		position.y += direction.y * speed * deltaTime;
-		damageAura.center = Vector2Add(position, Vector2Scale(size, 0.5f));
+		damageAura.center = Vector2Add(position,Vector2Scale(size,0.5f));
 		//position.x = Clamp(position.x, 0, SCREEN_WIDTH - size.x); // Ограничение экрана по X
 		//position.y = Clamp(position.y, 0, SCREEN_HEIGHT - size.y); // Ограничение экрана по Y
 
@@ -122,7 +122,7 @@ public:
 
 		Rectangle playerRect = { position.x, position.y, size.x, size.y };
 		Rectangle testRect = { 500, 500, 200, 200 };
-
+		
 
 	}
 
@@ -139,11 +139,6 @@ struct TextureInfo {
 	Vector2 position;            // Позиция на экране
 };
 
-struct CircleIntoEnemy
-{
-	Vector2 position;
-	float radius = 150;
-};
 
 struct Enemy {
 	Rectangle body;
@@ -171,44 +166,9 @@ void DrawGame();
 void UnloadGame();
 
 void CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
-	if (CheckCollisionCircleRec(dmgArea.center, dmgArea.radius, enemy_p.body)) {
+	if (CheckCollisionCircleRec(dmgArea.center, dmgArea.radius,enemy_p.body)) {
 		enemy_p.health -= player.damage;
 		cout << enemy_p.health << "\n";
-	}
-}
-
-void StaticCollisionResolution(CircleIntoEnemy& a, CircleIntoEnemy& b) {
-	Vector2 delta = Vector2Subtract(b.position, a.position);
-	float distance = Vector2Length(delta);
-	float overlap = distance - a.radius - b.radius;
-	Vector2 direction = Vector2Scale(Vector2Normalize(delta), (overlap / 2));
-	a.position = Vector2Add(a.position, direction);
-	b.position = Vector2Add(b.position, Vector2Negate(direction));
-}
-
-void HandleCollision(vector<pair<CircleIntoEnemy*, CircleIntoEnemy*>>& collisions,
-	CircleIntoEnemy& a, CircleIntoEnemy& b) {
-	Vector2 delta = Vector2Subtract(b.position, a.position);
-	float length = Vector2Length(delta);
-	float minDistance = a.radius + b.radius;
-	//Произошло столкновение
-	if (length < minDistance) {
-		StaticCollisionResolution(a, b);
-		CircleIntoEnemy* pa = &a;
-		CircleIntoEnemy* pb = &b;
-		collisions.push_back({ pa,pb });
-	}
-
-}
-
-void GenerateCircles(std::vector<Circle>& circles,int count = 10) {
-	int posX, posY;
-	circles.clear();
-	for (int i = 0; i < count; i++)
-	{
-		float radius = 150;
-		Vector2 position = { x,y };
-		circles.push_back({ position,radius });
 	}
 }
 
@@ -221,7 +181,7 @@ int main() {
 		UpdateGame();
 		DrawGame();
 
-		if (gamestate.gameOver)
+		if (gamestate.gameOver) 
 			InitGame();
 	}
 	CloseWindow();
@@ -254,7 +214,9 @@ void InitGame() {
 				color,
 				active
 		};
-		enemies.push_back(current);
+		enemies.push_back(
+			current
+		);
 	}
 
 	gamestate.score = 0;
@@ -268,7 +230,7 @@ void UpdateGame() {
 	gamestate.fullscrean();
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
-
+	
 	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 		printf("Mouse Position: X = %d, Y = %d\n", (int)mousePosition.x, (int)mousePosition.y); //для упрощения отрисовки координат в дальнейшем
 	}
@@ -299,12 +261,11 @@ void UpdateGame() {
 		auto playerPosition = player.position;
 		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
 		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
-		enemies[i].position = Vector2Add(enemies[i].position, move);
+		enemies[i].position = Vector2Add(enemies[i].position,move);
 		enemies[i].body.x = enemies[i].position.x;
 		enemies[i].body.y = enemies[i].position.y;
 	}
 }
-
 
 void LoadTextures() {
 	Image image1 = LoadImage("C:\\Users\\Academy\\Desktop\\VampireLike\\VampireLike\\vampireLike\\vampireLike\\assets\\Background\\background.png");
@@ -324,8 +285,8 @@ void DrawGame() {
 	{
 
 		DrawTextureV(background.texture, background.position, WHITE);
-		player.Draw();
-
+		player.Draw(); 
+		
 		for (int i = 0; i < MAX_ENEMIES; i++)
 		{
 			if (enemies[i].active) {
