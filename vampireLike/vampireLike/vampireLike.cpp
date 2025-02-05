@@ -139,7 +139,8 @@ struct TextureInfo {
 };
 
 
-struct Enemy_s {
+struct Enemy {
+	Vector2 position;
 	Rectangle body;
 	Color color;
 	Vector2 speed;
@@ -147,8 +148,10 @@ struct Enemy_s {
 };
 // Текстуры
 TextureInfo background;
-Enemy_s enemy = {};
+Enemy enemy = {};
 Player player = {};
+vector<Enemy> enemies;
+Player player;
 
 // declare funcs 
 void InitGame();
@@ -157,7 +160,7 @@ void UpdateGame();
 void DrawGame();
 void UnloadGame();
 
-void CheckCollisionAreaEnemy(Enemy_s& enemy_p, Circle& dmgArea) {
+void CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
 	if (CheckCollisionCircleRec(dmgArea.center, dmgArea.radius,enemy_p.body)) {
 		enemy_p.health -= player.damage;
 		cout << enemy_p.health;
@@ -173,13 +176,15 @@ int main() {
 		UpdateGame();
 		DrawGame();
 
-		if (gamestate.gameOver) InitGame();
+		if (gamestate.gameOver) 
+			InitGame();
 	}
 	CloseWindow();
 }
 
 
 void InitGame() {
+	int posX, posY;
 	// Инициализация камеры
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
@@ -230,6 +235,15 @@ void UpdateGame() {
 
 	// Проверка на столкновение врага и dmgArea
 	CheckCollisionAreaEnemy(enemy, player.damageAura);
+	for (int i = 0; i < enemies.size(); i++)
+	{
+		auto playerPosition = player.position;
+		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
+		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
+		enemies[i].position = Vector2Add(enemies[i].position,move);
+		enemies[i].body.x = enemies[i].position.x;
+		enemies[i].body.y = enemies[i].position.y;
+	}
 }
 
 void LoadTextures() {
