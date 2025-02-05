@@ -9,6 +9,7 @@ using namespace std;
 // Глобальные переменные
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
+const int MAX_ENEMIES = 10;
 
 // Классы
 class Gamestate {
@@ -140,18 +141,22 @@ struct TextureInfo {
 
 
 struct Enemy {
-	Vector2 position;
 	Rectangle body;
-	Color color;
 	Vector2 speed;
-	float health;
+	Vector2 position;
+	Color color;
+	bool active;
+	float health = 1000;
+	Vector2 size = { 100, 100 };
+	int lvl = 1;
+	int armor = 0;
+	int damage = 1;
 };
 // Текстуры
 TextureInfo background;
 Enemy enemy = {};
 Player player = {};
 vector<Enemy> enemies;
-Player player;
 
 // declare funcs 
 void InitGame();
@@ -163,7 +168,7 @@ void UnloadGame();
 void CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
 	if (CheckCollisionCircleRec(dmgArea.center, dmgArea.radius,enemy_p.body)) {
 		enemy_p.health -= player.damage;
-		cout << enemy_p.health;
+		cout << enemy_p.health << "\n";
 	}
 }
 
@@ -190,13 +195,29 @@ void InitGame() {
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
 	gamestate.camera.zoom = 0.5f;
 
-	// Инициализация врага
-	enemy.body = { 500, 500, 200, 200};
-	enemy.speed = { 10, 10 };
-	enemy.color = BLUE;
-	enemy.health = 1000;
 
-
+	for (int i = 0; i < MAX_ENEMIES; i++)
+	{
+		int x = GetRandomValue(0, SCREEN_WIDTH);
+		int y = GetRandomValue(0, SCREEN_HEIGHT);
+		int width = 150;
+		int height = 150;
+		Rectangle body = { x,y,width,height };
+		Vector2 speed = { 1.0f ,1.0f };
+		Vector2 position = { x,y };
+		Color color = BLUE;
+		auto active = true;
+		Enemy current = Enemy{
+				body,
+				speed,
+				position,
+				color,
+				active
+		};
+		enemies.push_back(
+			current
+		);
+	}
 
 	gamestate.score = 0;
 	gamestate.gameOver = false;
@@ -234,9 +255,9 @@ void UpdateGame() {
 
 
 	// Проверка на столкновение врага и dmgArea
-	CheckCollisionAreaEnemy(enemy, player.damageAura);
 	for (int i = 0; i < enemies.size(); i++)
 	{
+		CheckCollisionAreaEnemy(enemies[i], player.damageAura);a
 		auto playerPosition = player.position;
 		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
 		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
@@ -264,10 +285,14 @@ void DrawGame() {
 	{
 
 		DrawTextureV(background.texture, background.position, WHITE);
-		player.Draw();
-		DrawRectangleRec(enemy.body,enemy.color);
+		player.Draw(); 
 		
-		// Здесь будут другие объекты (враги, предметы)
+		for (int i = 0; i < MAX_ENEMIES; i++)
+		{
+			if (enemies[i].active) {
+				DrawRectangleRec(enemies[i].body, enemies[i].color);
+			}
+		}		// Здесь будут другие объекты (враги, предметы)
 	}
 	EndMode2D();
 
