@@ -257,7 +257,7 @@ void UpdateGame() {
 	// Проверка на столкновение врага и dmgArea
 	for (int i = 0; i < enemies.size(); i++)
 	{
-		CheckCollisionAreaEnemy(enemies[i], player.damageAura);a
+		CheckCollisionAreaEnemy(enemies[i], player.damageAura);
 		auto playerPosition = player.position;
 		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
 		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
