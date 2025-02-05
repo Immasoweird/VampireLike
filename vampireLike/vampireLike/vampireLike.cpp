@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include <vector>
 #include <raymath.h>
+#include <map>
 using namespace std;
 
 
@@ -10,21 +11,54 @@ const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 const int MAX_ENEMIES = 10;
 
-int score;
-bool gameOver;
+// Классы
+class Gamestate {
+public:
+	Camera2D camera; // Глобальная переменная камеры
+	int score;
+	bool gameOver;
 
+	void fullscrean() {
+		if (IsKeyReleased(KEY_F11)) {
+			ToggleBorderlessWindowed();
+		}
+	}
+}gamestate;
+
+class WeaponList {
+public:
+	map<string, int> weapon = {
+		{"sword", 1},
+		{"bow", 2},
+		{"axe", 3},
+	};
+
+};
+
+struct Circle {
+	Vector2 center;
+	float radius;
+	Color color;
+};
 //classes
 class Player {
+private:
+	void DrawAuraCirlce() {
+		DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
+	}
 public:
 	Vector2 position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-	Vector2 size = { 100, 100 };
-	float speed = 3;
+	Circle damageAura = { {position.x + 50, position.y+50},200,RED };  
+	Vector2 size = { 100,100 };
+	float speed = 700;
+	int attackRange = 200;
 	int lvl = 1;
 	int health = 100;
 	float hpRegen = 0.5;
 	int armor = 10;
 
 	int luck = 0;
+	int reroll = 0;
 	float evasion = 0; // percent 
 	float lifesteal = 1; // percent 
 	float collectArea = 0; // percent 
@@ -33,25 +67,18 @@ public:
 	float critDamage = 50; // percent 
 	float critChance = 5; // percent 
 	int attackSpeed = 1;
-	int attackRange = 10;
 
-	void Control() {
-		if (IsKeyDown(KEY_D)) position.x += speed;
-		if (IsKeyDown(KEY_A)) position.x -= speed;
-		if (IsKeyDown(KEY_W)) position.y -= speed;
-		if (IsKeyDown(KEY_S)) position.y += speed;
+	//dash
+	bool isDashing = false; // Отслеживание состояния рывка
+	float dashDuration = 0.15f;
+	float dashSpeed = 1500.0f;
+	float dashCooldown = 0.8f;
+	float cooldownTimer = 0.0f; // Таймер для отслеживания времени восстановления
+	float dashTimer = 0.0f;     // Таймер для отслеживания времени рывка
 
-		if (position.x < 0) position.x += speed;
-		if (position.x > (SCREEN_WIDTH - 110)) position.x -= speed;
-		if (position.y < 0) position.y += speed;
-		if (position.y > (SCREEN_HEIGHT - 110)) position.y -= speed;
+	void Update() {
+		float deltaTime = GetFrameTime(); // Время между кадрами
 
-<<<<<<< Updated upstream
-	}
-}player;
-
-
-=======
 		Vector2 direction = { 0, 0 };
 		if (IsKeyDown(KEY_D) or IsKeyDown(KEY_RIGHT)) direction.x += 1;
 		if (IsKeyDown(KEY_A) or IsKeyDown(KEY_LEFT)) direction.x -= 1;
@@ -65,7 +92,7 @@ public:
 		// Применение скорости к нормализованному вектору
 		position.x += direction.x * speed * deltaTime;
 		position.y += direction.y * speed * deltaTime;
-
+		damageAura.center = Vector2Add(position,Vector2Scale(size,0.5f));
 		//position.x = Clamp(position.x, 0, SCREEN_WIDTH - size.x); // Ограничение экрана по X
 		//position.y = Clamp(position.y, 0, SCREEN_HEIGHT - size.y); // Ограничение экрана по Y
 
@@ -95,28 +122,23 @@ public:
 
 		Rectangle playerRect = { position.x, position.y, size.x, size.y };
 		Rectangle testRect = { 500, 500, 200, 200 };
+		
 
-		//if (CheckCollisionRecs(playerRect, testRect)) {
-		//	printf("daoiwhfdoawihfoiawhfoiawhfoiawfhoiwaqfho\n");
-		//}
-
-		//if (CheckCollisionCircleRec(position + size / 2, attackRange, testRect)) {
-		//	printf("111111111111111111111111111111\n");
-		//	float distance = Vector2Distance( );
-
-		//	// Проверяем, находится ли объект в области коллизии
-		//	if (distance <= collisionRadius)
-		//}
 	}
-
 
 
 	void Draw() {
-		DrawCircleV(Vector2Add(position, Vector2Scale(size, 0.5f)), attackRange, RED);//Коллизия атаки 
-		DrawRectangleV(position, size, GOLD); //Коллизия игрока
+		DrawAuraCirlce(); //Аура
+		DrawRectangleV(position, size, GOLD); //Игрок
 	}
 
+}; /////
+
+struct TextureInfo {
+	Texture2D texture;           // Текстура
+	Vector2 position;            // Позиция на экране
 };
+
 
 struct Enemy {
 	Rectangle body;
@@ -124,28 +146,17 @@ struct Enemy {
 	Vector2 position;
 	Color color;
 	bool active;
+	float health = 1000;
 	Vector2 size = { 100, 100 };
 	int lvl = 1;
-	int health = 10;
 	int armor = 0;
 	int damage = 1;
 };
-
-struct TextureInfo {
-	Texture2D texture;           // Текстура
-	Vector2 position;            // Позиция на экране
-};
-
-struct Circle {
-	Vector2 center;
-	float radius;
-};
-
 // Текстуры
 TextureInfo background;
+Enemy enemy = {};
+Player player = {};
 vector<Enemy> enemies;
-Player player;
->>>>>>> Stashed changes
 
 // declare funcs 
 void InitGame();
@@ -154,42 +165,36 @@ void UpdateGame();
 void DrawGame();
 void UnloadGame();
 
-
+void CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
+	if (CheckCollisionCircleRec(dmgArea.center, dmgArea.radius,enemy_p.body)) {
+		enemy_p.health -= player.damage;
+		cout << enemy_p.health << "\n";
+	}
+}
 
 int main() {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Devil May Cry 9");
 	SetTargetFPS(165);
-
 	InitGame();
-	gamestate.gameOver = false;
+
 	while (!WindowShouldClose()) {
 		UpdateGame();
 		DrawGame();
 
-<<<<<<< Updated upstream
-		if (gameOver) InitGame();
-=======
 		if (gamestate.gameOver) 
 			InitGame();
->>>>>>> Stashed changes
 	}
 	CloseWindow();
 }
 
 
 void InitGame() {
-<<<<<<< Updated upstream
-	score = 0;
-	gameOver = false;
-=======
 	int posX, posY;
 	// Инициализация камеры
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
 	gamestate.camera.zoom = 0.5f;
 
-	gamestate.score = 0;
-	gamestate.gameOver = false;
 
 	for (int i = 0; i < MAX_ENEMIES; i++)
 	{
@@ -214,27 +219,18 @@ void InitGame() {
 		);
 	}
 
+	gamestate.score = 0;
+	gamestate.gameOver = false;
 	LoadTextures();
->>>>>>> Stashed changes
 }
 
 
 
-void PrintEnemies(const vector<Enemy>& items) {
-	for (const auto& item : items)
-	{
-		cout << item.position.x << " " << item.position.y << "\n";
-	}
-}
 void UpdateGame() {
-<<<<<<< Updated upstream
-	player.Control();
-	if (gameOver) return;
-=======
 	gamestate.fullscrean();
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
-
+	
 	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 		printf("Mouse Position: X = %d, Y = %d\n", (int)mousePosition.x, (int)mousePosition.y); //для упрощения отрисовки координат в дальнейшем
 	}
@@ -257,8 +253,11 @@ void UpdateGame() {
 		minBounds.y + gamestate.camera.offset.y,
 		maxBounds.y - gamestate.camera.offset.y);
 
+
+	// Проверка на столкновение врага и dmgArea
 	for (int i = 0; i < enemies.size(); i++)
 	{
+		CheckCollisionAreaEnemy(enemies[i], player.damageAura);a
 		auto playerPosition = player.position;
 		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
 		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
@@ -266,44 +265,42 @@ void UpdateGame() {
 		enemies[i].body.x = enemies[i].position.x;
 		enemies[i].body.y = enemies[i].position.y;
 	}
->>>>>>> Stashed changes
 }
 
 void LoadTextures() {
+	Image image1 = LoadImage("C:\\Users\\Academy\\Desktop\\VampireLike\\VampireLike\\vampireLike\\vampireLike\\assets\\Background\\background.png");
+	ImageResize(&image1, 10000, 10000);
+	background.texture = LoadTextureFromImage(image1);
+	background.position = { -5000, -5000 };
+	UnloadImage(image1);
 
 }
 
 void DrawGame() {
 	BeginDrawing();
 	ClearBackground(DARKGRAY);
-<<<<<<< Updated upstream
-	DrawRectangleV(player.position, player.size, GOLD);
-=======
-
 
 
 	BeginMode2D(gamestate.camera);
 	{
+
 		DrawTextureV(background.texture, background.position, WHITE);
-		player.Draw();
+		player.Draw(); 
+		
 		for (int i = 0; i < MAX_ENEMIES; i++)
 		{
 			if (enemies[i].active) {
-				DrawRectangleRec(enemies[i].body,enemies[i].color);
+				DrawRectangleRec(enemies[i].body, enemies[i].color);
 			}
-		}
+		}		// Здесь будут другие объекты (враги, предметы)
 	}
 	EndMode2D();
 
->>>>>>> Stashed changes
 
 	EndDrawing();
 
-
-
-	UpdateGame();
 }
 
 void UnloadGame() {
-	//UnloadTexture
+	UnloadTexture(background.texture);
 }
