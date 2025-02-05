@@ -46,6 +46,8 @@ private:
 	void DrawAuraCirlce() {
 		DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
 	}
+
+
 public:
 	Vector2 position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	Circle damageAura = { {position.x + 50, position.y+50},200,RED };  
@@ -126,7 +128,6 @@ public:
 
 	}
 
-
 	void Draw() {
 		DrawAuraCirlce(); //Аура
 		DrawRectangleV(position, size, GOLD); //Игрок
@@ -152,6 +153,12 @@ struct Enemy {
 	int armor = 0;
 	int damage = 1;
 };
+
+struct Triangle {
+	Vector2 first;
+	Vector2 second;
+	Vector2 third;
+};
 // Текстуры
 TextureInfo background;
 Enemy enemy = {};
@@ -165,13 +172,33 @@ void UpdateGame();
 void DrawGame();
 void UnloadGame();
 
-void CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
-	if (CheckCollisionCircleRec(dmgArea.center, dmgArea.radius,enemy_p.body)) {
-		enemy_p.health -= player.damage;
-		cout << enemy_p.health << "\n";
-	}
+bool CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
+	return CheckCollisionCircleRec(dmgArea.center, dmgArea.radius, enemy_p.body);
 }
 
+
+bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body) {
+	
+	std::vector<pair<Vector2, Vector2>> triangle_lines{ {triangle.first,triangle.second}, { triangle.first,triangle.third }, { triangle.second,triangle.third} };
+
+	std::vector<pair<Vector2, Vector2>> rectangle{
+		{{body.x, body.y}, { body.x + body.width, body.y }},
+		{{body.x, body.y}, { body.x, body.y + body.height }},
+		{{body.x + body.width, body.y + body.height}, { body.x + body.width, body.y }},
+		{{body.x + body.width, body.y + body.height},{ body.x, body.y + body.height }}
+	};
+	bool collision = false;
+	Vector2 collision_point = {};
+	for (const auto& triangle_line : triangle_lines) {
+		for (const auto& rect_line : rectangle) {
+			if (CheckCollisionLines(triangle_line.first, triangle_line.second, rect_line.first, rect_line.second, &collision_point)) {
+				return collision;
+			}
+		}
+	}
+	return collision;
+
+}
 int main() {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Devil May Cry 9");
 	SetTargetFPS(165);
@@ -214,9 +241,7 @@ void InitGame() {
 				color,
 				active
 		};
-		enemies.push_back(
-			current
-		);
+		enemies.push_back(current);
 	}
 
 	gamestate.score = 0;
@@ -225,6 +250,8 @@ void InitGame() {
 }
 
 
+Triangle attack_triangle = {0,0,0};
+bool attack = false;
 
 void UpdateGame() {
 	gamestate.fullscrean();
@@ -233,6 +260,27 @@ void UpdateGame() {
 	
 	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 		printf("Mouse Position: X = %d, Y = %d\n", (int)mousePosition.x, (int)mousePosition.y); //для упрощения отрисовки координат в дальнейшем
+		Vector2 center = Vector2Subtract(player.position, Vector2Scale(player.size, 0.5f));
+		Vector2 mouse = GetMousePosition();
+		Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
+		Vector2 range = { dir.x * player.attackRange,dir.y * player.attackRange };
+		Vector2 tangent = Vector2Rotate(dir, 90);
+		float coef = 0.577 * player.attackRange;
+		Vector2 left = { tangent.x * coef,tangent.y * coef };
+		Vector2 NTangent = Vector2Negate(tangent);
+		Vector2 right = { NTangent.x * coef,NTangent.y * coef };
+		Triangle attack_triangle = { center,left,right };
+		attack = true;
+		for (int i = 0; i < enemies.size(); i++)
+		{
+			if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
+				enemies[i].health -= player.damage;
+				cout << enemies[i].health << "\n";
+			}
+		}
+	}
+	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+		attack = false;
 	}
 
 	if (gamestate.gameOver) return;
@@ -254,10 +302,9 @@ void UpdateGame() {
 		maxBounds.y - gamestate.camera.offset.y);
 
 
-	// Проверка на столкновение врага и dmgArea
+	// Движение противников
 	for (int i = 0; i < enemies.size(); i++)
 	{
-		CheckCollisionAreaEnemy(enemies[i], player.damageAura);
 		auto playerPosition = player.position;
 		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
 		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
@@ -291,6 +338,9 @@ void DrawGame() {
 		{
 			if (enemies[i].active) {
 				DrawRectangleRec(enemies[i].body, enemies[i].color);
+				if(attack)
+					DrawTriangle(attack_triangle.first,attack_triangle.second,attack_triangle.third, GREEN);
+
 			}
 		}		// Здесь будут другие объекты (враги, предметы)
 	}
