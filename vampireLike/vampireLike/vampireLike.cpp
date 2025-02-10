@@ -18,7 +18,7 @@ public:
 	int score;
 	bool gameOver;
 
-	void fullscrean() {
+	void fullscreen() {
 		if (IsKeyReleased(KEY_F11)) {
 			ToggleBorderlessWindowed();
 		}
@@ -43,7 +43,7 @@ struct Circle {
 //classes
 class Player {
 private:
-	void DrawAuraCirlce() {
+	void DrawAuraCircle() {
 		DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
 	}
 
@@ -129,8 +129,9 @@ public:
 	}
 
 	void Draw() {
-		DrawAuraCirlce(); //Аура
+		DrawAuraCircle(); //Аура
 		DrawRectangleV(position, size, GOLD); //Игрок
+		DrawRectangle(500, 500, 200, 200, PURPLE);
 	}
 
 }; /////
@@ -254,22 +255,35 @@ Triangle attack_triangle = {0,0,0};
 bool attack = false;
 
 void UpdateGame() {
-	gamestate.fullscrean();
+	gamestate.fullscreen();
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
 	
-	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
-		printf("Mouse Position: X = %d, Y = %d\n", (int)mousePosition.x, (int)mousePosition.y); //для упрощения отрисовки координат в дальнейшем
-		Vector2 center = Vector2Subtract(player.position, Vector2Scale(player.size, 0.5f));
+	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+		float x = player.position.x;
+		float y = player.position.y;
+		Vector2 player_pos = {x,y};
+		Vector2 center = Vector2Subtract(player_pos, Vector2Scale(player.size, 0.5f));
 		Vector2 mouse = GetMousePosition();
-		Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
+		printf("Center: X = %d, Y = %d\n", (int)center.x, (int)center.y);
+		mouse = Vector2Subtract(mouse,gamestate.camera.target);//////////////////////////////////////////////////////////// поменять на add когда в scrn hght / wdth
+		printf("Player Position: X = %d, Y = %d\n", (int)player_pos.x, (int)player_pos.y);
+		printf("Mouse Position: X = %d, Y = %d\n", (int)mouse.x, (int)mouse.y);
+		Vector2 dir = Vector2Normalize({ mouse.x - player_pos.x,mouse.y - player_pos.y });
 		Vector2 range = { dir.x * player.attackRange,dir.y * player.attackRange };
+		printf("Range: X = %d, Y = %d\n", (int)range.x, (int)range.y);
 		Vector2 tangent = Vector2Rotate(dir, 90);
+		printf("Tangent: X = %d, Y = %d\n", (int)tangent.x, (int)tangent.y);
 		float coef = 0.577 * player.attackRange;
 		Vector2 left = { tangent.x * coef,tangent.y * coef };
 		Vector2 NTangent = Vector2Negate(tangent);
 		Vector2 right = { NTangent.x * coef,NTangent.y * coef };
-		Triangle attack_triangle = { center,left,right };
+		attack_triangle = { center,Vector2Add(left,range),Vector2Add(right,range) };
+		printf("Triangle:"); 
+		printf("1: X = %d, Y = %d\n", (int)attack_triangle.first.x, (int)attack_triangle.first.y); 
+		printf("2: X = %d, Y = %d\n", (int)attack_triangle.second.x, (int)attack_triangle.second.y); 
+		printf("2: X = %d, Y = %d\n", (int)attack_triangle.third.x, (int)attack_triangle.third.y); 
+
 		attack = true;
 		for (int i = 0; i < enemies.size(); i++)
 		{
@@ -338,7 +352,8 @@ void DrawGame() {
 		{
 			if (enemies[i].active) {
 				DrawRectangleRec(enemies[i].body, enemies[i].color);
-				if(attack)
+				if (attack)
+					//printf("dahwdhawhdahw");
 					DrawTriangle(attack_triangle.first,attack_triangle.second,attack_triangle.third, GREEN);
 
 			}
