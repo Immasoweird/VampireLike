@@ -50,10 +50,11 @@ private:
 
 public:
 	Vector2 position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-	Circle damageAura = { {position.x + 50, position.y+50},200,RED };  
+	Circle damageAura = { {position.x + 50, position.y + 50},200,RED };
 	Vector2 size = { 100,100 };
 	float speed = 700;
 	int attackRange = 200;
+	float attackAngle = PI / 6;
 	int lvl = 1;
 	int health = 100;
 	float hpRegen = 0.5;
@@ -94,7 +95,7 @@ public:
 		// Применение скорости к нормализованному вектору
 		position.x += direction.x * speed * deltaTime;
 		position.y += direction.y * speed * deltaTime;
-		damageAura.center = Vector2Add(position,Vector2Scale(size,0.5f));
+		damageAura.center = Vector2Add(position, Vector2Scale(size, 0.5f));
 		//position.x = Clamp(position.x, 0, SCREEN_WIDTH - size.x); // Ограничение экрана по X
 		//position.y = Clamp(position.y, 0, SCREEN_HEIGHT - size.y); // Ограничение экрана по Y
 
@@ -124,7 +125,7 @@ public:
 
 		Rectangle playerRect = { position.x, position.y, size.x, size.y };
 		Rectangle testRect = { 500, 500, 200, 200 };
-		
+
 
 	}
 
@@ -159,6 +160,10 @@ struct Triangle {
 	Vector2 first;
 	Vector2 second;
 	Vector2 third;
+	Vector2 range;
+	Vector2 tangent;
+	Vector2 NTangent;
+
 };
 // Текстуры
 TextureInfo background;
@@ -179,7 +184,7 @@ bool CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
 
 
 bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body) {
-	
+
 	std::vector<pair<Vector2, Vector2>> triangle_lines{ {triangle.first,triangle.second}, { triangle.first,triangle.third }, { triangle.second,triangle.third} };
 
 	std::vector<pair<Vector2, Vector2>> rectangle{
@@ -188,16 +193,15 @@ bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body) 
 		{{body.x + body.width, body.y + body.height}, { body.x + body.width, body.y }},
 		{{body.x + body.width, body.y + body.height},{ body.x, body.y + body.height }}
 	};
-	bool collision = false;
 	Vector2 collision_point = {};
 	for (const auto& triangle_line : triangle_lines) {
 		for (const auto& rect_line : rectangle) {
 			if (CheckCollisionLines(triangle_line.first, triangle_line.second, rect_line.first, rect_line.second, &collision_point)) {
-				return collision;
+				return true;
 			}
 		}
 	}
-	return collision;
+	return false;
 
 }
 int main() {
@@ -209,7 +213,7 @@ int main() {
 		UpdateGame();
 		DrawGame();
 
-		if (gamestate.gameOver) 
+		if (gamestate.gameOver)
 			InitGame();
 	}
 	CloseWindow();
@@ -251,38 +255,28 @@ void InitGame() {
 }
 
 
-Triangle attack_triangle = {0,0,0};
+Triangle attack_triangle = { 0,0,0 };
 bool attack = false;
 
 void UpdateGame() {
 	gamestate.fullscreen();
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
-	
-	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-		float x = player.position.x;
-		float y = player.position.y;
-		Vector2 player_pos = {x,y};
-		Vector2 center = Vector2Subtract(player_pos, Vector2Scale(player.size, 0.5f));
+
+	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+		Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
+		Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
+		center = { abs(center.x),abs(center.y) };
 		Vector2 mouse = GetMousePosition();
-		printf("Center: X = %d, Y = %d\n", (int)center.x, (int)center.y);
-		mouse = Vector2Subtract(mouse,gamestate.camera.target);//////////////////////////////////////////////////////////// поменять на add когда в scrn hght / wdth
-		printf("Player Position: X = %d, Y = %d\n", (int)player_pos.x, (int)player_pos.y);
-		printf("Mouse Position: X = %d, Y = %d\n", (int)mouse.x, (int)mouse.y);
-		Vector2 dir = Vector2Normalize({ mouse.x - player_pos.x,mouse.y - player_pos.y });
+		mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
+		Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
 		Vector2 range = { dir.x * player.attackRange,dir.y * player.attackRange };
-		printf("Range: X = %d, Y = %d\n", (int)range.x, (int)range.y);
-		Vector2 tangent = Vector2Rotate(dir, 90);
-		printf("Tangent: X = %d, Y = %d\n", (int)tangent.x, (int)tangent.y);
-		float coef = 0.577 * player.attackRange;
-		Vector2 left = { tangent.x * coef,tangent.y * coef };
-		Vector2 NTangent = Vector2Negate(tangent);
-		Vector2 right = { NTangent.x * coef,NTangent.y * coef };
-		attack_triangle = { center,Vector2Add(left,range),Vector2Add(right,range) };
-		printf("Triangle:"); 
-		printf("1: X = %d, Y = %d\n", (int)attack_triangle.first.x, (int)attack_triangle.first.y); 
-		printf("2: X = %d, Y = %d\n", (int)attack_triangle.second.x, (int)attack_triangle.second.y); 
-		printf("2: X = %d, Y = %d\n", (int)attack_triangle.third.x, (int)attack_triangle.third.y); 
+		Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * player.attackRange);
+		Vector2 edge = Vector2Add(player_pos, range);
+		Vector2 left = Vector2Add(edge, tangent);
+		Vector2 NTangent = Vector2Rotate(tangent, PI);
+		Vector2 right = Vector2Add(edge, NTangent);
+		attack_triangle = { player_pos,left,right,range,tangent,NTangent };
 
 		attack = true;
 		for (int i = 0; i < enemies.size(); i++)
@@ -322,7 +316,7 @@ void UpdateGame() {
 		auto playerPosition = player.position;
 		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
 		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
-		enemies[i].position = Vector2Add(enemies[i].position,move);
+		enemies[i].position = Vector2Add(enemies[i].position, move);
 		enemies[i].body.x = enemies[i].position.x;
 		enemies[i].body.y = enemies[i].position.y;
 	}
@@ -346,15 +340,20 @@ void DrawGame() {
 	{
 
 		DrawTextureV(background.texture, background.position, WHITE);
-		player.Draw(); 
-		
+		player.Draw();
+		if (attack)
+		{
+			DrawTriangle(attack_triangle.first, attack_triangle.second, attack_triangle.third, GREEN);
+			DrawLineEx({ 0,0 }, attack_triangle.range, 10, RED);
+			DrawLineEx(attack_triangle.range, attack_triangle.tangent, 10, GREEN);
+			DrawLineEx({ 0,0 }, attack_triangle.tangent, 10, PURPLE);
+			DrawLineEx(attack_triangle.range, attack_triangle.NTangent, 10, GREEN);
+			DrawLineEx({ 0,0 }, attack_triangle.NTangent, 10, PURPLE);
+		}
 		for (int i = 0; i < MAX_ENEMIES; i++)
 		{
 			if (enemies[i].active) {
 				DrawRectangleRec(enemies[i].body, enemies[i].color);
-				if (attack)
-					//printf("dahwdhawhdahw");
-					DrawTriangle(attack_triangle.first,attack_triangle.second,attack_triangle.third, GREEN);
 
 			}
 		}		// Здесь будут другие объекты (враги, предметы)
