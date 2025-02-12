@@ -25,51 +25,79 @@ public:
 	}
 }gamestate;
 
-class WeaponList {
-public:
-	map<string, int> weapon = {
-		{"sword", 1},
-		{"bow", 2},
-		{"axe", 3},
-	};
-
-};
-
 struct Circle {
 	Vector2 center;
 	float radius;
 	Color color;
 };
 //classes
+class Shape {
+
+};
+
+
+class Weapon {
+public:
+	int attackRange = 200;
+	int attackSpeed = 1;
+	int attackDamage = 1;
+	float weaponExp = 0.0f;
+	int weaponLevel = 1;
+	float critDamage = 50; // percent 
+	float critChance = 5; // percent 
+
+	void Attack(Shape x, Shape y) {
+		printf("weapon attack");
+	};
+}weapon;
+
+class Melee : public Weapon {
+public:
+
+	void Attack(Shape x, Shape y) {
+		printf("melee attack");
+	};
+};
+
+class Range : public Weapon {
+public:
+	int meow;
+	void Attack(Shape x, Shape y) {
+		printf("range attack");
+	};
+};
+
+class Bow : public Range {
+public:
+	int meowmeow;
+	void Attack(Shape x, Shape y) {
+		printf("bow attack");
+	};
+};
+
+
 class Player {
 private:
 	void DrawAuraCircle() {
 		DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
 	}
 
-
 public:
 	Vector2 position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	Circle damageAura = { {position.x + 50, position.y + 50},200,RED };
 	Vector2 size = { 100,100 };
+
 	float speed = 700;
-	int attackRange = 200;
-	float attackAngle = PI / 6;
+	float attackAngle = PI / 6; //def 6
 	int lvl = 1;
 	int health = 100;
 	float hpRegen = 0.5;
 	int armor = 10;
-
 	int luck = 0;
 	int reroll = 0;
 	float evasion = 0; // percent 
 	float lifesteal = 1; // percent 
 	float collectArea = 0; // percent 
-
-	int damage = 1;
-	float critDamage = 50; // percent 
-	float critChance = 5; // percent 
-	int attackSpeed = 1;
 
 	//dash
 	bool isDashing = false; // Отслеживание состояния рывка
@@ -122,11 +150,8 @@ public:
 			cooldownTimer -= deltaTime; // Уменьшение таймера восстановления
 		}
 
-
 		Rectangle playerRect = { position.x, position.y, size.x, size.y };
 		Rectangle testRect = { 500, 500, 200, 200 };
-
-
 	}
 
 	void Draw() {
@@ -134,14 +159,12 @@ public:
 		DrawRectangleV(position, size, GOLD); //Игрок
 		DrawRectangle(500, 500, 200, 200, PURPLE);
 	}
-
-}; /////
+};
 
 struct TextureInfo {
 	Texture2D texture;           // Текстура
 	Vector2 position;            // Позиция на экране
 };
-
 
 struct Enemy {
 	Rectangle body;
@@ -182,7 +205,6 @@ bool CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
 	return CheckCollisionCircleRec(dmgArea.center, dmgArea.radius, enemy_p.body);
 }
 
-
 bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body) {
 
 	std::vector<pair<Vector2, Vector2>> triangle_lines{ {triangle.first,triangle.second}, { triangle.first,triangle.third }, { triangle.second,triangle.third} };
@@ -202,8 +224,8 @@ bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body) 
 		}
 	}
 	return false;
-
 }
+
 int main() {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Devil May Cry 9");
 	SetTargetFPS(165);
@@ -219,14 +241,12 @@ int main() {
 	CloseWindow();
 }
 
-
 void InitGame() {
 	int posX, posY;
 	// Инициализация камеры
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
 	gamestate.camera.zoom = 0.5f;
-
 
 	for (int i = 0; i < MAX_ENEMIES; i++)
 	{
@@ -254,24 +274,25 @@ void InitGame() {
 	LoadTextures();
 }
 
-
 Triangle attack_triangle = { 0,0,0 };
 bool attack = false;
+
 
 void UpdateGame() {
 	gamestate.fullscreen();
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
 
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+
+	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 		Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
 		Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
 		center = { abs(center.x),abs(center.y) };
 		Vector2 mouse = GetMousePosition();
 		mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
 		Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
-		Vector2 range = { dir.x * player.attackRange,dir.y * player.attackRange };
-		Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * player.attackRange);
+		Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
+		Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
 		Vector2 edge = Vector2Add(player_pos, range);
 		Vector2 left = Vector2Add(edge, tangent);
 		Vector2 NTangent = Vector2Rotate(tangent, PI);
@@ -282,7 +303,7 @@ void UpdateGame() {
 		for (int i = 0; i < enemies.size(); i++)
 		{
 			if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
-				enemies[i].health -= player.damage;
+				enemies[i].health -= weapon.attackDamage;
 				cout << enemies[i].health << "\n";
 			}
 		}
@@ -335,10 +356,8 @@ void DrawGame() {
 	BeginDrawing();
 	ClearBackground(DARKGRAY);
 
-
 	BeginMode2D(gamestate.camera);
 	{
-
 		DrawTextureV(background.texture, background.position, WHITE);
 		player.Draw();
 		if (attack)
@@ -360,9 +379,7 @@ void DrawGame() {
 	}
 	EndMode2D();
 
-
 	EndDrawing();
-
 }
 
 void UnloadGame() {
