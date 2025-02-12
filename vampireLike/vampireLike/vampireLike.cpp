@@ -193,16 +193,15 @@ bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body) 
 		{{body.x + body.width, body.y + body.height}, { body.x + body.width, body.y }},
 		{{body.x + body.width, body.y + body.height},{ body.x, body.y + body.height }}
 	};
-	bool collision = false;
 	Vector2 collision_point = {};
 	for (const auto& triangle_line : triangle_lines) {
 		for (const auto& rect_line : rectangle) {
 			if (CheckCollisionLines(triangle_line.first, triangle_line.second, rect_line.first, rect_line.second, &collision_point)) {
-				return collision;
+				return true;
 			}
 		}
 	}
-	return collision;
+	return false;
 
 }
 int main() {
