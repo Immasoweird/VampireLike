@@ -265,9 +265,7 @@ void UpdateGame() {
 	Vector2 mousePosition = GetMousePosition();
 
 	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-		float x = player.position.x;
-		float y = player.position.y;
-		Vector2 player_pos = { x,y };
+		Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
 		Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
 		center = { abs(center.x),abs(center.y) };
 		Vector2 mouse = GetMousePosition();
@@ -275,11 +273,11 @@ void UpdateGame() {
 		Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
 		Vector2 range = { dir.x * player.attackRange,dir.y * player.attackRange };
 		Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * player.attackRange);
-		Vector2 edge = Vector2Add(center, range);
+		Vector2 edge = Vector2Add(player_pos, range);
 		Vector2 left = Vector2Add(edge, tangent);
 		Vector2 NTangent = Vector2Rotate(tangent, PI);
 		Vector2 right = Vector2Add(edge, NTangent);
-		attack_triangle = { center,left,right,range,tangent,NTangent };
+		attack_triangle = { player_pos,left,right,range,tangent,NTangent };
 
 		attack = true;
 		for (int i = 0; i < enemies.size(); i++)
