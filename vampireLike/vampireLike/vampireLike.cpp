@@ -3,6 +3,7 @@
 #include "updateHandler.h"
 #include "render.h"
 #include "inputHandler.h"
+#include "gameObjects.h"
 
 int main() {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Devil May Cry 9");
