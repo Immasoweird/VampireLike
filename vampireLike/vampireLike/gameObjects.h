@@ -16,6 +16,16 @@ struct Circle {
     Color color;
 };
 
+struct Triangle {
+	Vector2 first;
+	Vector2 second;
+	Vector2 third;
+	Vector2 range;
+	Vector2 tangent;
+	Vector2 NTangent;
+
+};
+
 struct TextureInfo {
     Texture2D texture;
     Vector2 position;
@@ -60,6 +70,7 @@ public:
     int damage;
     int attackRange;
     int attackSpeed;
+    float attackAngle;
     float critDamage;
     float critChance;
     float cooldownTimer; 

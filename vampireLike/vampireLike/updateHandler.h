@@ -2,4 +2,5 @@
 #include "gameObjects.h"
 
 void UpdateGame();
-void CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea,float damage);
+bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body);
+bool CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea);

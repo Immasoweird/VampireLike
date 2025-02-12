@@ -5,3 +5,5 @@ extern Gamestate gamestate;
 extern Player player;
 extern std::vector<Enemy> enemies;
 extern TextureInfo background;
+extern Triangle attack_triangle;
+extern bool attack;

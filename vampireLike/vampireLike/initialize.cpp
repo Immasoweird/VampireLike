@@ -8,6 +8,7 @@ Player::Player() {
 	this->size = { 100,100 };
 	this->speed = 700;
 	this->attackRange = 200;
+	this->attackAngle = PI / 6;
 	this->health = 100;
 	this->hpRegen = 0.5;
 	this->armor = 10;
@@ -38,6 +39,8 @@ void InitGame() {
 	gamestate.camera.zoom = 0.5f;
 	player = {};
 	enemies.clear();
+	attack_triangle = { };
+	attack = false;
 	for (int i = 0; i < MAX_ENEMIES; i++) {
 		enemies.push_back({
 			{0,0,150,150},     // body
@@ -53,7 +56,7 @@ void InitGame() {
 }
 
 void LoadTextures() {
-	Image image1 = LoadImage("background.png");
+	Image image1 = LoadImage("assets\\Background\\background.png");
 	ImageResize(&image1, 10000, 10000);
 	background.texture = LoadTextureFromImage(image1);
 	background.position = { -5000, -5000 };
