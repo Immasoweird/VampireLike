@@ -11,7 +11,7 @@ int main() {
 	while (!WindowShouldClose()) {
 		UpdateGame();
 		DrawGame();
-		UnloadGame();
 	}
+	UnloadGame();
 	CloseWindow();
 }
