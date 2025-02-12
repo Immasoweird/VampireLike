@@ -128,7 +128,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="globals.cpp" />
+    <ClCompile Include="initialize.cpp" />
+    <ClCompile Include="input_handler.cpp" />
+    <ClCompile Include="render.cpp" />
+    <ClCompile Include="updateHandler.cpp" />
     <ClCompile Include="vampireLike.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="gameObjects.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="initialize.h" />
+    <ClInclude Include="inputHandler.h" />
+    <ClInclude Include="render.h" />
+    <ClInclude Include="updateHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
