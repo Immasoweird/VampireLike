@@ -30,10 +30,36 @@ bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body) 
 
 }
 
+void StaticCollisionResolution(Vector2& position_b, float radius_b, Vector2& position_a, float radius_a) {
+	Vector2 delta = Vector2Subtract(position_b, position_a);
+	float distance = Vector2Length(delta);
+	float overlap = distance - radius_a - radius_b;
+	Vector2 direction = Vector2Scale(Vector2Normalize(delta), (overlap / 2));
+	position_a = Vector2Add(position_a, direction);
+	position_b = Vector2Add(position_b, Vector2Negate(direction));
+}
+
+void HandleCollision(Enemy& a, Enemy& b) {
+	float radius_b = b.body.width / 2;
+	Vector2 position_b = { b.body.x + radius_b,b.body.y + radius_b };
+	float radius_a = a.body.width / 2;
+	Vector2 position_a = { a.body.x + radius_a,a.body.y + radius_a };
+	Vector2 delta = Vector2Subtract(position_b, position_a);
+	float length = Vector2Length(delta);
+	float minDistance = radius_a + radius_b;
+
+	if (length < minDistance) {
+		StaticCollisionResolution(position_b, radius_b, position_a, radius_a);
+	}
+	a.body.x = position_a.x - radius_a;
+	a.body.y = position_a.y - radius_a;
+	b.body.x = position_b.x - radius_b;
+	b.body.y = position_b.y - radius_b;
+}
 
 void UpdateGame() {
-    gamestate.fullscrean();
-    player.Update();
+	gamestate.fullscreen();
+	player.Update();
 
 	Vector2 mousePosition = GetMousePosition();
 
@@ -54,7 +80,7 @@ void UpdateGame() {
 
 		attack = true;
 		for (int i = 0; i < enemies.size(); i++)
-		{ 
+		{
 			if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
 				enemies[i].health -= player.damage;
 				std::cout << enemies[i].health << "\n";
@@ -83,11 +109,18 @@ void UpdateGame() {
 		minBounds.y + gamestate.camera.offset.y,
 		maxBounds.y - gamestate.camera.offset.y);
 
-    // Обновление позиций врагов
-    for (auto& enemy : enemies) {
-        Vector2 direction = Vector2Normalize(Vector2Subtract(player.position, enemy.position));
-        enemy.position = Vector2Add(enemy.position, direction);
-        enemy.body.x = enemy.position.x;
-        enemy.body.y = enemy.position.y;
-    }
+	// Обновление позиций врагов
+	for (auto& enemy : enemies) {
+		Vector2 direction = Vector2Normalize(Vector2Subtract(player.position, enemy.position));
+		enemy.position = Vector2Add(enemy.position, direction);
+		enemy.body.x = enemy.position.x;
+		enemy.body.y = enemy.position.y;
+	}
+	for (int i = 0; i < enemies.size() - 1; i++)
+	{
+		for (int j = i + 1; j < enemies.size(); j++)
+		{
+			HandleCollision( enemies[i], enemies[j]);
+		}
+	}
 }

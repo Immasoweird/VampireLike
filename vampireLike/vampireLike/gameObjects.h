@@ -11,8 +11,10 @@ constexpr int MAX_ENEMIES = 10;
 
 // Основные структуры
 struct Circle {
-    Vector2 center;
+
+    Vector2 position;
     float radius;
+    Vector2 center;
     Color color;
 };
 
@@ -38,7 +40,7 @@ public:
     int score = 0;
     bool gameOver = false;
 
-    void fullscrean();
+    void fullscreen();
 };
 
 // Класс WeaponList

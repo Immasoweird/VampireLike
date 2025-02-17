@@ -2,7 +2,7 @@
 #include "globals.h"
 #include <raymath.h>
 
-void Gamestate::fullscrean() {
+void Gamestate::fullscreen() {
     if (IsKeyReleased(KEY_F11)) ToggleBorderlessWindowed();
 }
 

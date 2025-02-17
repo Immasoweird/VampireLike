@@ -1,10 +1,11 @@
 #include "initialize.h"
 #include "globals.h"
 #include <raymath.h>
+#include "gameObjects.h"
 
 Player::Player() {
 	this->position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
-	this->damageAura = { {position.x + 50, position.y + 50},200,RED };
+	this->damageAura = { {position.x + 50, position.y + 50},200,{position.x + 50, position.y + 50},RED };
 	this->size = { 100,100 };
 	this->speed = 700;
 	this->attackRange = 200;

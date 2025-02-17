@@ -9,6 +9,7 @@ int main() {
 	SetTargetFPS(165);
 	InitGame();
 	while (!WindowShouldClose()) {
+	
 		UpdateGame();
 		DrawGame();
 	}
