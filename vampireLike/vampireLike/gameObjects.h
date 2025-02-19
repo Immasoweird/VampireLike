@@ -87,10 +87,12 @@ public:
     float dashCooldown;
     float dashTimer;    
 
+    Texture2D texture;
 
     Player();
     void Update();
     void Draw();
+
 };
 
 // Структура Enemy
@@ -102,4 +104,9 @@ struct Enemy {
     bool active;
     float health;
     Vector2 size;
+
+    Texture2D texture;
+
+    void Draw();
+
 };

@@ -47,7 +47,7 @@ void InitGame() {
 			{0,0,150,150},     // body
 			{1.0f,1.0f},        // speed
 			{(float)GetRandomValue(0,SCREEN_WIDTH), (float)GetRandomValue(0,SCREEN_HEIGHT)}, // position
-			BLUE,               // color
+			RED,               // color
 			true,               // active
 			1000,               // health
 			{100,100}           // size
@@ -62,6 +62,21 @@ void LoadTextures() {
 	background.texture = LoadTextureFromImage(image1);
 	background.position = { -5000, -5000 };
 	UnloadImage(image1);
+
+	Image image2 = LoadImage("assets\\_Idle.png");
+	ImageCrop(&image2, { 37,41,35,38 });
+	ImageResize(&image2, 100, 100);
+	player.texture = LoadTextureFromImage(image2);
+	UnloadImage(image2);
+
+	Image image3 = LoadImage("assets\\SkeletonIdle.png");
+	ImageCrop(&image3, { 0,0,23,32 });
+	ImageResize(&image3, 100, 100);
+	for (int i = 0; i < MAX_ENEMIES; i++) {
+		enemies[i].texture=LoadTextureFromImage(image3);
+	}
+	UnloadImage(image3);
+
 }
 
 void UnloadGame() {
