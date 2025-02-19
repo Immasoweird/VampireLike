@@ -2,20 +2,27 @@
 #include "globals.h"
 
 void Player::DrawAuraCirlce() {
-    DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
+	DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
 }
 
 void Player::Draw() {
-    DrawAuraCirlce();
-    DrawRectangleV(position, size, GOLD);
+	DrawAuraCirlce();
+	DrawRectangleV(position, size, GOLD);
+	DrawTexture(texture, position.x, position.y, RAYWHITE);
+}
+
+void Enemy::Draw()
+{
+	//DrawRectangleRec(body, color);
+	DrawTexture(texture, position.x, position.y, RAYWHITE);
 }
 
 void DrawGame() {
-    BeginDrawing();
-    ClearBackground(DARKGRAY);
+	BeginDrawing();
+	ClearBackground(DARKGRAY);
 
-    BeginMode2D(gamestate.camera);
-    {
+	BeginMode2D(gamestate.camera);
+	{
 		DrawTextureV(background.texture, background.position, WHITE);
 		player.Draw();
 		if (attack)
@@ -30,14 +37,13 @@ void DrawGame() {
 		for (int i = 0; i < enemies.size(); i++)
 		{
 			if (enemies[i].active) {
-				DrawRectangleRec(enemies[i].body, enemies[i].color);
+				enemies[i].Draw();
 
 			}
 		}
-        for (auto& enemy : enemies) {
-            if (enemy.active) DrawRectangleRec(enemy.body, enemy.color);
-        }
-    }
-    EndMode2D();
-    EndDrawing();
+	
+	
+	}
+	EndMode2D();
+	EndDrawing();
 }
