@@ -10,6 +10,9 @@ using namespace std;
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 const int MAX_ENEMIES = 10;
+const int MAX_SHOOTS = 200;
+float shootSpeed = 1200.0f;
+int waveCount = 1;
 
 // Классы
 class Gamestate {
@@ -36,11 +39,11 @@ class Shape {
 };
 
 
-class Weapon {
-public:
+struct Weapon {
+	int selectWeapon = 1;
 	int attackRange = 200;
 	int attackSpeed = 1;
-	int attackDamage = 1;
+	int attackDamage = 111;
 	float weaponExp = 0.0f;
 	int weaponLevel = 1;
 	float critDamage = 50; // percent 
@@ -51,29 +54,14 @@ public:
 	};
 }weapon;
 
-class Melee : public Weapon {
-public:
 
-	void Attack(Shape x, Shape y) {
-		printf("melee attack");
-	};
-};
-
-class Range : public Weapon {
-public:
-	int meow;
-	void Attack(Shape x, Shape y) {
-		printf("range attack");
-	};
-};
-
-class Bow : public Range {
-public:
-	int meowmeow;
-	void Attack(Shape x, Shape y) {
-		printf("bow attack");
-	};
-};
+struct Shoot {
+	Vector2 position;
+	Vector2 speed;
+	float radius;
+	bool active;
+	Color color;
+}shoot[MAX_SHOOTS]; // Объявление массива структур
 
 
 class Player {
@@ -88,7 +76,7 @@ public:
 	Vector2 size = { 100,100 };
 
 	float speed = 700;
-	float attackAngle = PI / 6; //def 6
+	float attackAngle = PI / 6; //def 6, spear=40
 	int lvl = 1;
 	int health = 100;
 	float hpRegen = 0.5;
@@ -172,7 +160,7 @@ struct Enemy {
 	Vector2 position;
 	Color color;
 	bool active;
-	float health = 1000;
+	float health = 150;
 	Vector2 size = { 100, 100 };
 	int lvl = 1;
 	int armor = 0;
@@ -207,9 +195,9 @@ bool CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea) {
 
 bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body) {
 
-	std::vector<pair<Vector2, Vector2>> triangle_lines{ {triangle.first,triangle.second}, { triangle.first,triangle.third }, { triangle.second,triangle.third} };
+	vector<pair<Vector2, Vector2>> triangle_lines{ {triangle.first,triangle.second}, { triangle.first,triangle.third }, { triangle.second,triangle.third} };
 
-	std::vector<pair<Vector2, Vector2>> rectangle{
+	vector<pair<Vector2, Vector2>> rectangle{
 		{{body.x, body.y}, { body.x + body.width, body.y }},
 		{{body.x, body.y}, { body.x, body.y + body.height }},
 		{{body.x + body.width, body.y + body.height}, { body.x + body.width, body.y }},
@@ -241,17 +229,31 @@ int main() {
 	CloseWindow();
 }
 
-void InitGame() {
-	int posX, posY;
-	// Инициализация камеры
-	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
-	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
-	gamestate.camera.zoom = 0.5f;
 
-	for (int i = 0; i < MAX_ENEMIES; i++)
+void InitEnemies(int enemiesNumber) {
+	enemies.clear();
+	for (int i = 0; i < enemiesNumber; i++)
 	{
-		int x = GetRandomValue(0, SCREEN_WIDTH);
-		int y = GetRandomValue(0, SCREEN_HEIGHT);
+		int x, y;
+		if (i % 4 == 0) {
+			x = GetRandomValue(player.position.x - SCREEN_WIDTH - 300, player.position.x - SCREEN_WIDTH);
+			y = GetRandomValue(player.position.y - SCREEN_HEIGHT, player.position.y + SCREEN_HEIGHT);
+		}
+		if (i % 4 == 1) {
+			x = GetRandomValue(player.position.x + SCREEN_WIDTH, player.position.x + SCREEN_WIDTH + 300);
+			y = GetRandomValue(player.position.y - SCREEN_HEIGHT, player.position.y + SCREEN_HEIGHT);
+		}
+		if (i % 4 == 2) {
+			x = GetRandomValue(player.position.x - SCREEN_WIDTH, player.position.x + SCREEN_WIDTH);
+			y = GetRandomValue(player.position.y - SCREEN_HEIGHT - 300, player.position.y - SCREEN_HEIGHT);
+		}
+		if (i % 4 == 3) {
+			x = GetRandomValue(player.position.x - SCREEN_WIDTH, player.position.x + SCREEN_WIDTH);
+			y = GetRandomValue(player.position.y + SCREEN_HEIGHT, player.position.y + SCREEN_HEIGHT + 300);
+		}
+		
+
+
 		int width = 150;
 		int height = 150;
 		Rectangle body = { x,y,width,height };
@@ -268,6 +270,28 @@ void InitGame() {
 		};
 		enemies.push_back(current);
 	}
+	printf("Enemies: %d", enemies.size());
+}
+
+
+void InitGame() {
+	int posX, posY;
+	// Инициализация камеры
+	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
+	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f }; // Центр экрана
+	gamestate.camera.zoom = 0.5f;
+
+	InitEnemies(10);
+
+	for (int i = 0; i < MAX_SHOOTS; i++) {
+		shoot[i].position = { 0, 0 };
+		shoot[i].speed = { 0, 0 };
+		shoot[i].radius = 5; // Размер стрелы
+		shoot[i].active = false;
+		shoot[i].color = WHITE;
+	}
+
+
 
 	gamestate.score = 0;
 	gamestate.gameOver = false;
@@ -284,30 +308,145 @@ void UpdateGame() {
 	Vector2 mousePosition = GetMousePosition();
 
 
-	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-		Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
-		Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
-		center = { abs(center.x),abs(center.y) };
-		Vector2 mouse = GetMousePosition();
-		mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
-		Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
-		Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
-		Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
-		Vector2 edge = Vector2Add(player_pos, range);
-		Vector2 left = Vector2Add(edge, tangent);
-		Vector2 NTangent = Vector2Rotate(tangent, PI);
-		Vector2 right = Vector2Add(edge, NTangent);
-		attack_triangle = { player_pos,left,right,range,tangent,NTangent };
+	bool anyAlive = false;
+	for (int i = 0; i < enemies.size(); i++) {
+		auto& enemy = enemies[i];
+		if (enemy.health <= 0) {
+			enemies[i].active = false;
+		}
+		if (enemies[i].active) {
+			anyAlive = true;
+		}
+	}
+	if (!anyAlive) {
+		printf("Wave: %d \n", ++waveCount);
+		InitEnemies(waveCount * 2 + 10);
+	}
 
-		attack = true;
-		for (int i = 0; i < enemies.size(); i++)
-		{
-			if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
-				enemies[i].health -= weapon.attackDamage;
-				cout << enemies[i].health << "\n";
+
+
+	if (IsKeyReleased(KEY_EQUAL)) {
+		weapon.selectWeapon++;
+		if (weapon.selectWeapon > 3) {
+			weapon.selectWeapon = 1;
+		}
+		printf("%d", weapon.selectWeapon);
+	}
+	if (weapon.selectWeapon == 1) {
+		player.attackAngle = PI / 6;
+		weapon.attackRange = 200;
+		player.damageAura.radius = 200;
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
+			Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
+			center = { abs(center.x),abs(center.y) };
+			Vector2 mouse = GetMousePosition();
+			mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
+			Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
+			Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
+			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
+			Vector2 edge = Vector2Add(player_pos, range);
+			Vector2 left = Vector2Add(edge, tangent);
+			Vector2 NTangent = Vector2Rotate(tangent, PI);
+			Vector2 right = Vector2Add(edge, NTangent);
+			attack_triangle = { player_pos,left,right,range,tangent,NTangent };
+
+			attack = true;
+			for (int i = 0; i < enemies.size(); i++)
+			{	
+				if (enemies[i].active) {
+					if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
+						enemies[i].health -= weapon.attackDamage;
+						cout << enemies[i].health << "\n";
+					}
+				}
 			}
 		}
 	}
+	else if (weapon.selectWeapon == 2) { //spear
+		player.attackAngle = PI / 40;
+		weapon.attackRange = 500;
+		player.damageAura.radius = 500;
+
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
+			Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
+			center = { abs(center.x),abs(center.y) };
+			Vector2 mouse = GetMousePosition();
+			mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
+			Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
+			Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
+			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
+			Vector2 edge = Vector2Add(player_pos, range);
+			Vector2 left = Vector2Add(edge, tangent);
+			Vector2 NTangent = Vector2Rotate(tangent, PI);
+			Vector2 right = Vector2Add(edge, NTangent);
+			attack_triangle = { player_pos,left,right,range,tangent,NTangent };
+
+			attack = true;
+			for (int i = 0; i < enemies.size(); i++)
+			{
+				if (enemies[i].active) {
+					if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
+						enemies[i].health -= weapon.attackDamage;
+						cout << enemies[i].health << "\n";
+					}
+				}
+			}
+		}
+	}
+	else if (weapon.selectWeapon == 3) { // Bow
+		// Создание стрелы
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			Vector2 playerCenter = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
+			Vector2 mousePosition = GetMousePosition();
+			Vector2 mouseWorldPos = GetScreenToWorld2D(mousePosition, gamestate.camera);
+
+			Vector2 direction = Vector2Normalize(Vector2Subtract(mouseWorldPos, playerCenter));
+
+			for (int i = 0; i < MAX_SHOOTS; i++) {
+				if (!shoot[i].active) {
+					shoot[i].position = playerCenter;
+					shoot[i].speed = Vector2Scale(direction, 300.0f); // Уменьшенная скорость
+					shoot[i].active = true;
+					shoot[i].radius = 10.0f; // Увеличенный радиус
+					shoot[i].color = YELLOW; // Яркий цвет
+					break;
+				}
+			}
+		}
+
+		// Обновление стрел
+		for (int i = 0; i < MAX_SHOOTS; i++) {
+			if (shoot[i].active) {
+				shoot[i].position = Vector2Add(
+					shoot[i].position,
+					Vector2Scale(shoot[i].speed, GetFrameTime())
+				);
+
+				// Проверка выхода за пределы экрана
+				Vector2 screenPos = GetWorldToScreen2D(shoot[i].position, gamestate.camera);
+				if (screenPos.x < 0 || screenPos.x > SCREEN_WIDTH ||
+					screenPos.y < 0 || screenPos.y > SCREEN_HEIGHT) {
+					shoot[i].active = false;
+				}
+
+				// Проверка столкновений
+				for (auto& enemy : enemies) {
+					if (enemies[i].active) {
+						if (CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, enemy.body)) {
+							enemy.health -= weapon.attackDamage;
+							cout << enemy.health << "\n";
+							shoot[i].active = false;
+							enemy.color = ORANGE; // Изменение цвета врага
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 		attack = false;
 	}
@@ -360,8 +499,20 @@ void DrawGame() {
 	{
 		DrawTextureV(background.texture, background.position, WHITE);
 		player.Draw();
+		for (int i = 0; i < MAX_SHOOTS; i++) {
+			if (shoot[i].active) {
+				DrawCircleV(shoot[i].position, shoot[i].radius, shoot[i].color);
+				DrawLineEx(
+					shoot[i].position,
+					Vector2Add(shoot[i].position, Vector2Scale(shoot[i].speed, 0.1f)),
+					3.0f,
+					BLACK
+				);
+			}
+		}
 		if (attack)
 		{
+
 			DrawTriangle(attack_triangle.first, attack_triangle.second, attack_triangle.third, GREEN);
 			DrawLineEx({ 0,0 }, attack_triangle.range, 10, RED);
 			DrawLineEx(attack_triangle.range, attack_triangle.tangent, 10, GREEN);
@@ -369,11 +520,10 @@ void DrawGame() {
 			DrawLineEx(attack_triangle.range, attack_triangle.NTangent, 10, GREEN);
 			DrawLineEx({ 0,0 }, attack_triangle.NTangent, 10, PURPLE);
 		}
-		for (int i = 0; i < MAX_ENEMIES; i++)
+		for (int i = 0; i < enemies.size(); i++)
 		{
 			if (enemies[i].active) {
 				DrawRectangleRec(enemies[i].body, enemies[i].color);
-
 			}
 		}		// Здесь будут другие объекты (враги, предметы)
 	}
