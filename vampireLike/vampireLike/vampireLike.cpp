@@ -10,8 +10,14 @@ using namespace std;
 const int SCREEN_WIDTH = 1600;
 const int SCREEN_HEIGHT = 900;
 const int MAX_ENEMIES = 10;
+
+const float SWORD_ATTACK_COOLDOWN = 100.0f; // Кулдаун для атаки копьём
+const float SPEAR_ATTACK_COOLDOWN = 1.0f; // Кулдаун для атаки копьём
+const float BOW_ATTACK_COOLDOWN = 1.0f; // Кулдаун для атаки копьём
+
 const int MAX_SHOOTS = 200;
 float shootSpeed = 1200.0f;
+
 int waveCount = 1;
 
 // Классы
@@ -41,6 +47,7 @@ class Shape {
 
 struct Weapon {
 	int selectWeapon = 1;
+	float cooldown = 0.0f;
 	int attackRange = 200;
 	int attackSpeed = 1;
 	int attackDamage = 111;
@@ -137,6 +144,8 @@ public:
 		if (cooldownTimer > 0) {
 			cooldownTimer -= deltaTime; // Уменьшение таймера восстановления
 		}
+
+		
 
 		Rectangle playerRect = { position.x, position.y, size.x, size.y };
 		Rectangle testRect = { 500, 500, 200, 200 };
@@ -306,7 +315,10 @@ void UpdateGame() {
 	gamestate.fullscreen();
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
-
+	
+	if (weapon.cooldown > 0.0f) {
+		weapon.cooldown -= GetFrameTime();
+	}
 
 	bool anyAlive = false;
 	for (int i = 0; i < enemies.size(); i++) {
@@ -365,10 +377,11 @@ void UpdateGame() {
 	}
 	else if (weapon.selectWeapon == 2) { //spear
 		player.attackAngle = PI / 40;
+		weapon.attackSpeed = 100;
 		weapon.attackRange = 500;
 		player.damageAura.radius = 500;
 
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) and weapon.cooldown <= 0) {
 			Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
 			Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
 			center = { abs(center.x),abs(center.y) };
@@ -393,6 +406,7 @@ void UpdateGame() {
 					}
 				}
 			}
+			weapon.cooldown = SPEAR_ATTACK_COOLDOWN;
 		}
 	}
 	else if (weapon.selectWeapon == 3) { // Bow
@@ -449,6 +463,8 @@ void UpdateGame() {
 
 	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 		attack = false;
+		weapon.cooldown = weapon.cooldown;
+
 	}
 
 	if (gamestate.gameOver) return;
