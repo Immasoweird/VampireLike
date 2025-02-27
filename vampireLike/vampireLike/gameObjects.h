@@ -7,6 +7,11 @@
 // Константы
 constexpr int SCREEN_WIDTH = 1600;
 constexpr int SCREEN_HEIGHT = 900;
+
+constexpr float SWORD_ATTACK_COOLDOWN = 100.0f; // Кулдаун для атаки копьём
+constexpr float SPEAR_ATTACK_COOLDOWN = 1.0f; // Кулдаун для атаки копьём
+constexpr float BOW_ATTACK_COOLDOWN = 1.0f; // Кулдаун для атаки копьём
+
 constexpr int MAX_ENEMIES = 10;
 constexpr int MAX_SHOOTS = 200;
 
@@ -53,6 +58,7 @@ class Shape {
 struct Weapon {
     int selectWeapon = 1;
     int attackRange = 200;
+    float cooldown = 0.0f;
     int attackSpeed = 1;
     int attackDamage = 111;
     float weaponExp = 0.0f;

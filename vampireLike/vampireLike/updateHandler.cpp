@@ -63,6 +63,10 @@ void UpdateGame() {
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
 
+	if (weapon.cooldown > 0.0f) {
+		weapon.cooldown -= GetFrameTime();
+	}
+
 	bool anyAlive = false;
 	for (int i = 0; i < enemies.size(); i++) {
 		auto& enemy = enemies[i];
@@ -86,7 +90,7 @@ void UpdateGame() {
 		printf("%d", weapon.selectWeapon);
 	}
 
-	if (weapon.selectWeapon == 1) {
+	if (weapon.selectWeapon == 1) { //sword
 		player.attackAngle = PI / 6;
 		weapon.attackRange = 200;
 		player.damageAura.radius = 200;
@@ -122,7 +126,7 @@ void UpdateGame() {
 		weapon.attackRange = 500;
 		player.damageAura.radius = 500;
 
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) and weapon.cooldown <= 0) {
 			Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
 			Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
 			center = { abs(center.x),abs(center.y) };
@@ -147,6 +151,7 @@ void UpdateGame() {
 					}
 				}
 			}
+			weapon.cooldown = SPEAR_ATTACK_COOLDOWN;
 		}
 	}
 	else if (weapon.selectWeapon == 3) { // Bow
