@@ -8,6 +8,7 @@
 constexpr int SCREEN_WIDTH = 1600;
 constexpr int SCREEN_HEIGHT = 900;
 constexpr int MAX_ENEMIES = 10;
+constexpr int MAX_SHOOTS = 200;
 
 // Основные структуры
 struct Circle {
@@ -41,6 +42,36 @@ public:
     bool gameOver = false;
 
     void fullscreen();
+};
+
+//classes
+class Shape {
+
+};
+
+
+struct Weapon {
+    int selectWeapon = 1;
+    int attackRange = 200;
+    int attackSpeed = 1;
+    int attackDamage = 111;
+    float weaponExp = 0.0f;
+    int weaponLevel = 1;
+    float critDamage = 50; // percent 
+    float critChance = 5; // percent 
+
+    void Attack(Shape x, Shape y) {
+        printf("weapon attack");
+    };
+};
+
+
+struct Shoot {
+    Vector2 position;
+    Vector2 speed;
+    float radius;
+    bool active;
+    Color color;
 };
 
 // Класс WeaponList

@@ -1,7 +1,7 @@
 #pragma once
 #include "gameObjects.h"
 
-void InitEnemies();
+void InitEnemies(int enemyNumber);
 void InitGame();
 void LoadTextures();
 void UnloadGame();

@@ -1,4 +1,5 @@
 #include "updateHandler.h"
+#include "initialize.h"
 #include "globals.h"
 #include <iostream>
 #include <raymath.h>
@@ -60,33 +61,146 @@ void HandleCollision(Enemy& a, Enemy& b) {
 void UpdateGame() {
 	gamestate.fullscreen();
 	player.Update();
-
 	Vector2 mousePosition = GetMousePosition();
 
-	if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-		Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
-		Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
-		center = { abs(center.x),abs(center.y) };
-		Vector2 mouse = GetMousePosition();
-		mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
-		Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
-		Vector2 range = { dir.x * player.attackRange,dir.y * player.attackRange };
-		Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * player.attackRange);
-		Vector2 edge = Vector2Add(player_pos, range);
-		Vector2 left = Vector2Add(edge, tangent);
-		Vector2 NTangent = Vector2Rotate(tangent, PI);
-		Vector2 right = Vector2Add(edge, NTangent);
-		attack_triangle = { player_pos,left,right,range,tangent,NTangent };
+	bool anyAlive = false;
+	for (int i = 0; i < enemies.size(); i++) {
+		auto& enemy = enemies[i];
+		if (enemy.health <= 0) {
+			enemies[i].active = false;
+		}
+		if (enemies[i].active) {
+			anyAlive = true;
+		}
+	}
+	if (!anyAlive) {
+		printf("Wave: %d \n", ++waveCount);
+		InitEnemies(waveCount * 2 + 10);
+	}
 
-		attack = true;
-		for (int i = 0; i < enemies.size(); i++)
-		{
-			if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
-				enemies[i].health -= player.damage;
-				std::cout << enemies[i].health << "\n";
+	if (IsKeyReleased(KEY_EQUAL)) {
+		weapon.selectWeapon++;
+		if (weapon.selectWeapon > 3) {
+			weapon.selectWeapon = 1;
+		}
+		printf("%d", weapon.selectWeapon);
+	}
+
+	if (weapon.selectWeapon == 1) {
+		player.attackAngle = PI / 6;
+		weapon.attackRange = 200;
+		player.damageAura.radius = 200;
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
+			Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
+			center = { abs(center.x),abs(center.y) };
+			Vector2 mouse = GetMousePosition();
+			mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
+			Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
+			Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
+			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
+			Vector2 edge = Vector2Add(player_pos, range);
+			Vector2 left = Vector2Add(edge, tangent);
+			Vector2 NTangent = Vector2Rotate(tangent, PI);
+			Vector2 right = Vector2Add(edge, NTangent);
+			attack_triangle = { player_pos,left,right,range,tangent,NTangent };
+
+			attack = true;
+			for (int i = 0; i < enemies.size(); i++)
+			{
+				if (enemies[i].active) {
+					if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
+						enemies[i].health -= weapon.attackDamage;
+						std::cout << enemies[i].health << "\n";
+					}
+				}
 			}
 		}
 	}
+	else if (weapon.selectWeapon == 2) { //spear
+		player.attackAngle = PI / 40;
+		weapon.attackRange = 500;
+		player.damageAura.radius = 500;
+
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
+			Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
+			center = { abs(center.x),abs(center.y) };
+			Vector2 mouse = GetMousePosition();
+			mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
+			Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
+			Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
+			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
+			Vector2 edge = Vector2Add(player_pos, range);
+			Vector2 left = Vector2Add(edge, tangent);
+			Vector2 NTangent = Vector2Rotate(tangent, PI);
+			Vector2 right = Vector2Add(edge, NTangent);
+			attack_triangle = { player_pos,left,right,range,tangent,NTangent };
+
+			attack = true;
+			for (int i = 0; i < enemies.size(); i++)
+			{
+				if (enemies[i].active) {
+					if (CheckCollisionAttackRange(attack_triangle, enemies[i].body) && CheckCollisionAreaEnemy(enemies[i], player.damageAura)) {
+						enemies[i].health -= weapon.attackDamage;
+						std::cout << enemies[i].health << "\n";
+					}
+				}
+			}
+		}
+	}
+	else if (weapon.selectWeapon == 3) { // Bow
+		// Создание стрелы
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+			Vector2 playerCenter = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
+			Vector2 mousePosition = GetMousePosition();
+			Vector2 mouseWorldPos = GetScreenToWorld2D(mousePosition, gamestate.camera);
+
+			Vector2 direction = Vector2Normalize(Vector2Subtract(mouseWorldPos, playerCenter));
+
+			for (int i = 0; i < MAX_SHOOTS; i++) {
+				if (!shoot[i].active) {
+					shoot[i].position = playerCenter;
+					shoot[i].speed = Vector2Scale(direction, 300.0f); // Уменьшенная скорость
+					shoot[i].active = true;
+					shoot[i].radius = 10.0f; // Увеличенный радиус
+					shoot[i].color = YELLOW; // Яркий цвет
+					break;
+				}
+			}
+		}
+
+		// Обновление стрел
+		for (int i = 0; i < MAX_SHOOTS; i++) {
+			if (shoot[i].active) {
+				shoot[i].position = Vector2Add(
+					shoot[i].position,
+					Vector2Scale(shoot[i].speed, GetFrameTime())
+				);
+
+				// Проверка выхода за пределы экрана
+				Vector2 screenPos = GetWorldToScreen2D(shoot[i].position, gamestate.camera);
+				if (screenPos.x < 0 || screenPos.x > SCREEN_WIDTH ||
+					screenPos.y < 0 || screenPos.y > SCREEN_HEIGHT) {
+					shoot[i].active = false;
+				}
+
+				// Проверка столкновений
+				for (auto& enemy : enemies) {
+					if (enemy.active) {
+						if (CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, enemy.body)) {
+							enemy.health -= weapon.attackDamage;
+							std::cout << enemy.health << "\n";
+							shoot[i].active = false;
+							enemy.color = ORANGE; // Изменение цвета врага
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 		attack = false;
 	}
@@ -109,18 +223,15 @@ void UpdateGame() {
 		minBounds.y + gamestate.camera.offset.y,
 		maxBounds.y - gamestate.camera.offset.y);
 
-	// Обновление позиций врагов
-	for (auto& enemy : enemies) {
-		Vector2 direction = Vector2Normalize(Vector2Subtract(player.position, enemy.position));
-		enemy.position = Vector2Add(enemy.position, direction);
-		enemy.body.x = enemy.position.x;
-		enemy.body.y = enemy.position.y;
-	}
-	for (int i = 0; i < enemies.size() - 1; i++)
+
+	// Движение противников
+	for (int i = 0; i < enemies.size(); i++)
 	{
-		for (int j = i + 1; j < enemies.size(); j++)
-		{
-			HandleCollision( enemies[i], enemies[j]);
-		}
+		auto playerPosition = player.position;
+		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
+		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
+		enemies[i].position = Vector2Add(enemies[i].position, move);
+		enemies[i].body.x = enemies[i].position.x;
+		enemies[i].body.y = enemies[i].position.y;
 	}
 }

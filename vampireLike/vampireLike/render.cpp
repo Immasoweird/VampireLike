@@ -1,5 +1,6 @@
 #include "render.h"
 #include "globals.h"
+#include "raymath.h"
 
 void Player::DrawAuraCirlce() {
 	DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
@@ -13,7 +14,7 @@ void Player::Draw() {
 
 void Enemy::Draw()
 {
-	//DrawRectangleRec(body, color);
+	DrawRectangleRec(body, color);
 	DrawTexture(texture, position.x, position.y, RAYWHITE);
 }
 
@@ -41,7 +42,18 @@ void DrawGame() {
 
 			}
 		}
-	
+		for (int i = 0; i < MAX_SHOOTS; i++)
+		{
+			if (shoot[i].active) {
+				DrawCircleV(shoot[i].position, shoot[i].radius, shoot[i].color);
+				DrawLineEx(
+					shoot[i].position,
+					Vector2Add(shoot[i].position, Vector2Scale(shoot[i].speed, 0.1f)),
+					3.0f,
+					BLACK
+				);
+			}
+		}
 	
 	}
 	EndMode2D();

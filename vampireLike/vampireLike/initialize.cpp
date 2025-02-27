@@ -32,29 +32,73 @@ Player::Player() {
 	this->dashCooldown = 0.8f;
 	this->cooldownTimer = 0.0f; // Таймер для отслеживания времени восстановления
 	this->dashTimer = 0.0f;
+
+	this->texture = {};
 }
 
+void InitEnemies(int enemiesNumber) {
+	enemies.clear();
+	for (int i = 0; i < enemiesNumber; i++)
+	{
+		int x, y;
+		if (i % 4 == 0) {
+			x = GetRandomValue(player.position.x - SCREEN_WIDTH - 300, player.position.x - SCREEN_WIDTH);
+			y = GetRandomValue(player.position.y - SCREEN_HEIGHT, player.position.y + SCREEN_HEIGHT);
+		}
+		if (i % 4 == 1) {
+			x = GetRandomValue(player.position.x + SCREEN_WIDTH, player.position.x + SCREEN_WIDTH + 300);
+			y = GetRandomValue(player.position.y - SCREEN_HEIGHT, player.position.y + SCREEN_HEIGHT);
+		}
+		if (i % 4 == 2) {
+			x = GetRandomValue(player.position.x - SCREEN_WIDTH, player.position.x + SCREEN_WIDTH);
+			y = GetRandomValue(player.position.y - SCREEN_HEIGHT - 300, player.position.y - SCREEN_HEIGHT);
+		}
+		if (i % 4 == 3) {
+			x = GetRandomValue(player.position.x - SCREEN_WIDTH, player.position.x + SCREEN_WIDTH);
+			y = GetRandomValue(player.position.y + SCREEN_HEIGHT, player.position.y + SCREEN_HEIGHT + 300);
+		}
+
+		int width = 150;
+		int height = 150;
+		Rectangle body = { x,y,width,height };
+		Vector2 speed = { 1.0f ,1.0f };
+		Vector2 position = { x,y };
+		Color color = BLUE;
+		auto active = true;
+		Enemy current = Enemy{
+				body,
+				speed,
+				position,
+				color,
+				active,
+				100
+		};
+		enemies.push_back(current);
+	}
+}
 void InitGame() {
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
 	gamestate.camera.zoom = 0.5f;
 	player = {};
-	enemies.clear();
 	attack_triangle = { };
 	attack = false;
-	for (int i = 0; i < MAX_ENEMIES; i++) {
-		enemies.push_back({
-			{0,0,150,150},     // body
-			{1.0f,1.0f},        // speed
-			{(float)GetRandomValue(0,SCREEN_WIDTH), (float)GetRandomValue(0,SCREEN_HEIGHT)}, // position
-			RED,               // color
-			true,               // active
-			1000,               // health
-			{100,100}           // size
-			});
+	shootSpeed = 1200.0f;
+	waveCount = 1;
+
+	shoot.resize(MAX_SHOOTS);
+	for (int i = 0; i < MAX_SHOOTS; i++) {
+		shoot[i].position = { 0,0 };
+		shoot[i].speed = { 0,0 };
+		shoot[i].active = false;
+		shoot[i].color = WHITE;
 	}
+	InitEnemies(10);
 	LoadTextures();
 }
+
+
+
 
 void LoadTextures() {
 	Image image1 = LoadImage("assets\\Background\\background.png");
