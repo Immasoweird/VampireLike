@@ -17,7 +17,6 @@ constexpr int MAX_SHOOTS = 200;
 
 // Основные структуры
 struct Circle {
-
     Vector2 position;
     float radius;
     Vector2 center;
@@ -56,6 +55,7 @@ class Shape {
 
 
 struct Weapon {
+    int allWeapons = 4;
     int selectWeapon = 1;
     int attackRange = 200;
     float cooldown = 0.0f;
@@ -71,13 +71,18 @@ struct Weapon {
     };
 };
 
-
+struct Explosion {
+    Circle body;
+    bool active = false;
+    float damage;
+};
 struct Shoot {
     Vector2 position;
     Vector2 speed;
     float radius;
     bool active;
     Color color;
+    Explosion explosion;
 };
 
 // Класс WeaponList

@@ -134,6 +134,7 @@
     <ClCompile Include="render.cpp" />
     <ClCompile Include="updateHandler.cpp" />
     <ClCompile Include="vampireLike.cpp" />
+    <ClCompile Include="weaponHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameObjects.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="inputHandler.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="updateHandler.h" />
+    <ClInclude Include="weaponHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

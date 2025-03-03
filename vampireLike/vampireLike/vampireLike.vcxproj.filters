@@ -33,6 +33,9 @@
     <ClCompile Include="globals.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="weaponHandler.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameObjects.h">
@@ -51,6 +54,9 @@
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="render.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="weaponHandler.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
