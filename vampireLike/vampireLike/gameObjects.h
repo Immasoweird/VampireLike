@@ -18,10 +18,10 @@ constexpr int MAX_SHOOTS = 200;
 // Основные структуры
 struct Circle {
 
-    Vector2 position;
-    float radius;
-    Vector2 center;
-    Color color;
+	Vector2 position;
+	float radius;
+	Vector2 center;
+	Color color;
 };
 
 struct Triangle {
@@ -35,18 +35,18 @@ struct Triangle {
 };
 
 struct TextureInfo {
-    Texture2D texture;
-    Vector2 position;
+	Texture2D texture;
+	Vector2 position;
 };
 
 // Класс Gamestate
 class Gamestate {
 public:
-    Camera2D camera;
-    int score = 0;
-    bool gameOver = false;
+	Camera2D camera;
+	int score = 0;
+	bool gameOver = false;
 
-    void fullscreen();
+	void fullscreen();
 };
 
 //classes
@@ -83,67 +83,73 @@ struct Shoot {
 // Класс WeaponList
 class WeaponList {
 public:
-    std::map<std::string, int> weapon = {
-        {"sword", 1},
-        {"bow", 2},
-        {"axe", 3}
-    };
+	std::map<std::string, int> weapon = {
+		{"sword", 1},
+		{"bow", 2},
+		{"axe", 3}
+	};
 };
 
 // Класс Player
 class Player {
 private:
-    void DrawAuraCirlce();
+	void DrawAuraCirlce();
 public:
-    Vector2 position;
-    Circle damageAura;
-    Vector2 size;
-    float speed;
+	Vector2 position;
+	Circle damageAura;
+	Vector2 size;
+	Vector2 direction;
+	float speed;
 
-    int luck;
-    int reroll;
-    float evasion;
-    float lifesteal;
-    float collectArea;
+	int luck;
+	int reroll;
+	float evasion;
+	float lifesteal;
+	float collectArea;
 
-    int damage;
-    int attackRange;
-    int attackSpeed;
-    float attackAngle;
-    float critDamage;
-    float critChance;
-    float cooldownTimer; 
+	int damage;
+	int attackRange;
+	int attackSpeed;
+	float attackAngle;
+	float critDamage;
+	float critChance;
+	float cooldownTimer;
+	int FrameCounter;
 
-    int health;
-    float hpRegen;
-    int armor;
+	int health;
+	float hpRegen;
+	int armor;
 
-    bool isDashing;
-    float dashDuration;
-    float dashSpeed;
-    float dashCooldown;
-    float dashTimer;    
+	bool isDashing;
+	float dashDuration;
+	float dashSpeed;
+	float dashCooldown;
+	float dashTimer;
 
-    Texture2D texture;
+	Texture2D texture;
+	Texture2D runTextureRight;
+	Texture2D runTextureLeft;
 
-    Player();
-    void Update();
-    void Draw();
+	Player();
+	void Update();
+	void Draw();
+	void DrawRunRight();
+	void DrawRunLeft();
 
 };
 
 // Структура Enemy
 struct Enemy {
-    Rectangle body;
-    Vector2 speed;
-    Vector2 position;
-    Color color;
-    bool active;
-    float health;
-    Vector2 size;
+	Rectangle body;
+	Vector2 speed;
+	Vector2 position;
+	Color color;
+	bool active;
+	float health;
+	Vector2 size;
 
-    Texture2D texture;
+	Texture2D texture;
 
-    void Draw();
+	void Draw();
 
 };

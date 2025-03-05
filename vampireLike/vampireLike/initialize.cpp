@@ -13,6 +13,7 @@ Player::Player() {
 	this->health = 100;
 	this->hpRegen = 0.5;
 	this->armor = 10;
+	this->direction = { 0,0 };
 
 	this->luck = 0;
 	this->reroll = 0;
@@ -34,6 +35,7 @@ Player::Player() {
 	this->dashTimer = 0.0f;
 
 	this->texture = {};
+	this->FrameCounter = 1;
 }
 
 void InitEnemies(int enemiesNumber) {
@@ -108,9 +110,18 @@ void LoadTextures() {
 	UnloadImage(image1);
 
 	Image image2 = LoadImage("assets\\_Idle.png");
-	ImageCrop(&image2, { 37,41,35,38 });
-	ImageResize(&image2, 100, 100);
+	ImageResize(&image2, image2.width*3, image2.height*3);
 	player.texture = LoadTextureFromImage(image2);
+	UnloadImage(image2);
+	
+	image2 = LoadImage("assets\\_RunRight.png");
+	ImageResize(&image2, image2.width*3, image2.height*3);
+	player.runTextureRight = LoadTextureFromImage(image2);
+	UnloadImage(image2);
+	
+	image2 = LoadImage("assets\\_RunLeft.png");
+	ImageResize(&image2, image2.width*3, image2.height*3);
+	player.runTextureLeft = LoadTextureFromImage(image2);
 	UnloadImage(image2);
 
 	Image image3 = LoadImage("assets\\SkeletonIdle.png");

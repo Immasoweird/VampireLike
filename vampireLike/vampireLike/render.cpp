@@ -9,7 +9,22 @@ void Player::DrawAuraCirlce() {
 void Player::Draw() {
 	DrawAuraCirlce();
 	DrawRectangleV(position, size, GOLD);
-	DrawTexture(texture, position.x, position.y, RAYWHITE);
+	//DrawTexture(texture, position.x, position.y, RAYWHITE);
+	DrawTextureRec(texture, { ((float)texture.width / 10) * (FrameCounter % 10), 0, (float)texture.width / 10, (float)texture.height }, { position.x - 115, position.y - 140 }, RAYWHITE);
+}
+
+void Player::DrawRunRight() {
+	DrawAuraCirlce();
+	DrawRectangleV(position, size, GOLD);
+	//DrawTexture(texture, position.x, position.y, RAYWHITE);
+	DrawTextureRec(runTextureRight, { ((float)runTextureRight.width / 10) * (FrameCounter % 10), 0, (float)runTextureRight.width / 10, (float)runTextureRight.height }, { position.x - 115, position.y - 140 }, RAYWHITE);
+}
+
+void Player::DrawRunLeft() {
+	DrawAuraCirlce();
+	DrawRectangleV(position, size, GOLD);
+	//DrawTexture(texture, position.x, position.y, RAYWHITE);
+	DrawTextureRec(runTextureLeft, { ((float)runTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)runTextureLeft.width / 10, (float)runTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
 
 void Enemy::Draw()
@@ -25,7 +40,20 @@ void DrawGame() {
 	BeginMode2D(gamestate.camera);
 	{
 		DrawTextureV(background.texture, background.position, WHITE);
-		player.Draw();
+		if (player.direction.x > 0)
+		{
+			player.DrawRunRight();
+		}
+		else if (player.direction.x < 0)
+		{
+			player.DrawRunLeft();
+		}
+		else
+		{
+			player.Draw();
+		}
+
+		player.direction = { 0,0 };
 		if (attack)
 		{
 			DrawTriangle(attack_triangle.first, attack_triangle.second, attack_triangle.third, GREEN);
@@ -54,7 +82,7 @@ void DrawGame() {
 				);
 			}
 		}
-	
+
 	}
 	EndMode2D();
 	EndDrawing();
