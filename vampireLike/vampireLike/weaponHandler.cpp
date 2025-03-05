@@ -98,38 +98,7 @@ void weaponHandler() {
 				}
 			}
 		}
-
-		// Обновление стрел
-		for (int i = 0; i < MAX_SHOOTS; i++) {
-			if (shoot[i].active) {
-				shoot[i].position = Vector2Add(
-					shoot[i].position,
-					Vector2Scale(shoot[i].speed, GetFrameTime())
-				);
-
-				// Проверка выхода за пределы экрана
-				Vector2 screenPos = GetWorldToScreen2D(shoot[i].position, gamestate.camera);
-				if (screenPos.x < 0 || screenPos.x > SCREEN_WIDTH ||
-					screenPos.y < 0 || screenPos.y > SCREEN_HEIGHT) {
-					shoot[i].active = false;
-				}
-
-				// Проверка столкновений
-				for (auto& enemy : enemies) {
-					if (enemy.active) {
-						if (CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, enemy.body)) {
-							enemy.health -= weapon.attackDamage;
-							std::cout << enemy.health << "\n";
-							shoot[i].active = false;
-							enemy.color = ORANGE; // Изменение цвета врага
-							break;
-						}
-					}
-				}
-			}
-		}
 	}
-
 	else if (weapon.selectWeapon == 4) { // fireball
 		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
 			Vector2 playerCenter = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
@@ -186,11 +155,39 @@ void weaponHandler() {
 					}
 				}
 
-				
+
 			}
 		}
 	}
 
+	// Обновление стрел
+	for (int i = 0; i < MAX_SHOOTS; i++) {
+		if (shoot[i].active) {
+			shoot[i].position = Vector2Add(
+				shoot[i].position,
+				Vector2Scale(shoot[i].speed, GetFrameTime())
+			);
+			// Проверка выхода за пределы экрана
+			Vector2 screenPos = GetWorldToScreen2D(shoot[i].position, gamestate.camera);
+			if (screenPos.x < 0 || screenPos.x > SCREEN_WIDTH ||
+				screenPos.y < 0 || screenPos.y > SCREEN_HEIGHT) {
+				shoot[i].active = false;
+			}
+
+			// Проверка столкновений
+			for (auto& enemy : enemies) {
+				if (enemy.active) {
+					if (CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, enemy.body)) {
+						enemy.health -= weapon.attackDamage;
+						std::cout << enemy.health << "\n";
+						shoot[i].active = false;
+						enemy.color = ORANGE; // Изменение цвета врага
+						break;
+					}
+				}
+			}
+		}
+	}
 
 	if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
 		attack = false;

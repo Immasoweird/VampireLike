@@ -66,6 +66,7 @@ void InitEnemies(int enemiesNumber) {
 		Color color = BLUE;
 		auto active = true;
 		float health = 100;
+		float damage = 1;
 		Enemy current = Enemy{
 				body,
 				speed,
@@ -73,6 +74,7 @@ void InitEnemies(int enemiesNumber) {
 				color,
 				active,
 				health,
+				damage,
 		};
 		enemies.push_back(current);
 	}
@@ -114,12 +116,13 @@ void InitGame() {
 			damage,
 		};
 	}
+
 	InitEnemies(10);
-	LoadTextures();
+	if (!spritesLoaded) {
+		LoadTextures();
+		spritesLoaded = true;
+	}
 }
-
-
-
 
 void LoadTextures() {
 	Image image1 = LoadImage("assets\\Background\\background.png");

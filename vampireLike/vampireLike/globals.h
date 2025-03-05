@@ -11,3 +11,4 @@ extern Triangle attack_triangle;
 extern bool attack;
 extern float shootSpeed;
 extern int waveCount;
+extern bool spritesLoaded;

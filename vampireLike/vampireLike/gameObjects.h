@@ -145,7 +145,7 @@ struct Enemy {
     Color color;
     bool active;
     float health;
-    Vector2 size;
+    float damage;
 
     Texture2D texture;
 

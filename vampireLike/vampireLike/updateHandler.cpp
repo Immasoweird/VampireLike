@@ -61,6 +61,14 @@ void HandleCollision(Enemy& a, Enemy& b) {
 
 void UpdateGame() {
 	gamestate.fullscreen();
+
+	if (gamestate.gameOver) return;
+
+	if (IsKeyReleased(KEY_R)) {
+		InitGame();
+		gamestate.gameOver = false;
+	}
+
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
 
@@ -85,7 +93,6 @@ void UpdateGame() {
 
 	weaponHandler();
 
-	if (gamestate.gameOver) return;
 
 	// Обновление камеры (после движения игрока)
 	Vector2 desiredTarget = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
@@ -113,5 +120,14 @@ void UpdateGame() {
 		enemies[i].position = Vector2Add(enemies[i].position, move);
 		enemies[i].body.x = enemies[i].position.x;
 		enemies[i].body.y = enemies[i].position.y;
+		if (enemies[i].active and player.health > 0 and CheckCollisionRecs({ player.position.x, player.position.y }, enemies[i].body)) {
+			player.health -= enemies[i].damage;
+			std::cout << player.health << std::endl;
+			
+		}
+	}
+
+	if (player.health < 1) {
+		gamestate.gameOver = true;
 	}
 }

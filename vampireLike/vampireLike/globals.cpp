@@ -11,3 +11,4 @@ Triangle attack_triangle;
 bool attack;
 float shootSpeed;
 int waveCount;
+bool spritesLoaded = false;
