@@ -131,6 +131,7 @@
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="initialize.cpp" />
     <ClCompile Include="input_handler.cpp" />
+    <ClCompile Include="lvl_table.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="updateHandler.cpp" />
     <ClCompile Include="vampireLike.cpp" />
@@ -141,6 +142,7 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="initialize.h" />
     <ClInclude Include="inputHandler.h" />
+    <ClInclude Include="lvl_table.h" />
     <ClInclude Include="render.h" />
     <ClInclude Include="updateHandler.h" />
     <ClInclude Include="weaponHandler.h" />

@@ -36,6 +36,9 @@
     <ClCompile Include="weaponHandler.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="lvl_table.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameObjects.h">
@@ -57,6 +60,9 @@
       <Filter>Исходные файлы</Filter>
     </ClInclude>
     <ClInclude Include="weaponHandler.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="lvl_table.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
