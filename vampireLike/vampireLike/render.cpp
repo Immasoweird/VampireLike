@@ -40,11 +40,11 @@ void DrawGame() {
 	BeginMode2D(gamestate.camera);
 	{
 		DrawTextureV(background.texture, background.position, WHITE);
-		if (player.direction.x > 0)
+		if (player.direction.x > 0 or player.direction.y > 0)
 		{
 			player.DrawRunRight();
 		}
-		else if (player.direction.x < 0)
+		else if (player.direction.x < 0 or player.direction.y < 0)
 		{
 			player.DrawRunLeft();
 		}
