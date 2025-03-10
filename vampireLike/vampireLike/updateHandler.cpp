@@ -90,9 +90,10 @@ void UpdateGame() {
 	for (int i = 0; i < enemies.size(); i++) {
 		auto& enemy = enemies[i];
 		if (enemy.health <= 0) {
-			enemies[i].active = false;
-			gamestate.score++;
-
+			if (enemies[i].active) {
+				gamestate.score++;
+				enemies[i].active = false;
+			}
 		}
 		if (enemies[i].active) {
 			anyAlive = true;

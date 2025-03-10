@@ -106,6 +106,7 @@ public:
 	Vector2 direction;
 	float speed;
 
+	int lvl;
 	int luck;
 	int reroll;
 	float evasion;
