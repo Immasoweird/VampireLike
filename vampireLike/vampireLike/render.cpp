@@ -27,12 +27,6 @@ void Player::DrawRunLeft() {
 	DrawTextureRec(runTextureLeft, { ((float)runTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)runTextureLeft.width / 10, (float)runTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
 
-void Player::isRunLeft() {
-	if (IsKeyDown(KEY_D))
-	{
-		isRunningLeft = false;
-	}
-}
 
 void Enemy::Draw()
 {
@@ -49,11 +43,27 @@ void DrawGame() {
 		DrawTextureV(background.texture, background.position, WHITE);
 		if (player.direction.x > 0)
 		{
+			isRunningLeft = false;
 			player.DrawRunRight();
 		}
 		else if (player.direction.x < 0)
 		{
+			isRunningLeft = true;
 			player.DrawRunLeft();
+		}
+		else if (player.direction.y > 0)
+		{
+			if (isRunningLeft)
+				player.DrawRunLeft();
+			else 
+				player.DrawRunRight();
+		}
+		else if (player.direction.y < 0)
+		{
+			if (isRunningLeft)
+				player.DrawRunLeft();
+			else 
+				player.DrawRunRight();
 		}
 		else
 		{

@@ -16,3 +16,7 @@ extern Rectangle PlayerRectangle;
 extern int GlobalFrameCounter;
 extern bool spritesLoaded;
 extern bool isRunningLeft;
+extern Texture2D enemyTexture;
+extern Texture2D playerTexture;
+extern Texture2D playerRunTextureRight;
+extern Texture2D playerRunTextureLeft;
