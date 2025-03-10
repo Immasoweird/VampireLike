@@ -11,4 +11,7 @@ extern Triangle attack_triangle;
 extern bool attack;
 extern float shootSpeed;
 extern int waveCount;
+extern Image IdleImage;
+extern Rectangle PlayerRectangle;
+extern int GlobalFrameCounter;
 extern bool spritesLoaded;

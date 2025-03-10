@@ -11,4 +11,7 @@ Triangle attack_triangle;
 bool attack;
 float shootSpeed;
 int waveCount;
+Image IdleImage;
+Rectangle PlayerRectangle;
+int GlobalFrameCounter;
 bool spritesLoaded = false;
