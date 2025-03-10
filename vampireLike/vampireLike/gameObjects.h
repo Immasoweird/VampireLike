@@ -140,6 +140,7 @@ public:
 	void Draw();
 	void DrawRunRight();
 	void DrawRunLeft();
+	void isRunLeft();
 
 };
 

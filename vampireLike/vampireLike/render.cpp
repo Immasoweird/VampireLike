@@ -27,6 +27,13 @@ void Player::DrawRunLeft() {
 	DrawTextureRec(runTextureLeft, { ((float)runTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)runTextureLeft.width / 10, (float)runTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
 
+void Player::isRunLeft() {
+	if (IsKeyDown(KEY_D))
+	{
+		isRunningLeft = false;
+	}
+}
+
 void Enemy::Draw()
 {
 	DrawRectangleRec(body, color);
@@ -40,11 +47,11 @@ void DrawGame() {
 	BeginMode2D(gamestate.camera);
 	{
 		DrawTextureV(background.texture, background.position, WHITE);
-		if (player.direction.x > 0 or player.direction.y > 0)
+		if (player.direction.x > 0)
 		{
 			player.DrawRunRight();
 		}
-		else if (player.direction.x < 0 or player.direction.y < 0)
+		else if (player.direction.x < 0)
 		{
 			player.DrawRunLeft();
 		}

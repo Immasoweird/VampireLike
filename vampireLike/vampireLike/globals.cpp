@@ -15,3 +15,4 @@ Image IdleImage;
 Rectangle PlayerRectangle;
 int GlobalFrameCounter;
 bool spritesLoaded = false;
+bool isRunningLeft;
