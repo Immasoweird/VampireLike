@@ -15,3 +15,8 @@ Image IdleImage;
 Rectangle PlayerRectangle;
 int GlobalFrameCounter;
 bool spritesLoaded = false;
+bool isRunningLeft;
+Texture2D enemyTexture;
+Texture2D playerTexture;
+Texture2D playerRunTextureRight;
+Texture2D playerRunTextureLeft;

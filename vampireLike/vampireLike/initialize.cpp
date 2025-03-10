@@ -77,6 +77,7 @@ void InitEnemies(int enemiesNumber) {
 				active,
 				health,
 				damage,
+				enemyTexture
 		};
 		enemies.push_back(current);
 	}
@@ -86,6 +87,9 @@ void InitGame() {
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
 	gamestate.camera.zoom = 0.5f;
 	player = {};
+	player.texture = playerTexture;
+	player.runTextureLeft = playerRunTextureLeft;
+	player.runTextureRight = playerRunTextureRight;
 	attack_triangle = { };
 	attack = false;
 	shootSpeed = 1200.0f;
@@ -136,25 +140,28 @@ void LoadTextures() {
 	UnloadImage(image1);
 
 	Image image2 = LoadImage("assets\\_Idle.png");
-	ImageResize(&image2, image2.width*3, image2.height*3);
-	player.texture = LoadTextureFromImage(image2);
-	UnloadImage(image2);
-	
+	ImageResize(&image2, image2.width * 3, image2.height * 3);
+	playerTexture = LoadTextureFromImage(image2);
+	player.texture = playerTexture;
+
 	image2 = LoadImage("assets\\_RunRight.png");
-	ImageResize(&image2, image2.width*3, image2.height*3);
-	player.runTextureRight = LoadTextureFromImage(image2);
-	UnloadImage(image2);
-	
+	ImageResize(&image2, image2.width * 3, image2.height * 3);
+	playerRunTextureRight = LoadTextureFromImage(image2);
+	player.runTextureRight = playerRunTextureRight;
+
+
 	image2 = LoadImage("assets\\_RunLeft.png");
-	ImageResize(&image2, image2.width*3, image2.height*3);
-	player.runTextureLeft = LoadTextureFromImage(image2);
+	ImageResize(&image2, image2.width * 3, image2.height * 3);
+	playerRunTextureLeft = LoadTextureFromImage(image2);
+	player.runTextureLeft = playerRunTextureLeft;
 	UnloadImage(image2);
 
 	Image image3 = LoadImage("assets\\SkeletonIdle.png");
 	ImageCrop(&image3, { 0,0,23,32 });
 	ImageResize(&image3, 100, 100);
+	enemyTexture = LoadTextureFromImage(image3);
 	for (int i = 0; i < MAX_ENEMIES; i++) {
-		enemies[i].texture = LoadTextureFromImage(image3);
+		enemies[i].texture = enemyTexture;
 	}
 	UnloadImage(image3);
 
