@@ -62,9 +62,19 @@ void HandleCollision(Enemy& a, Enemy& b) {
 void UpdateGame() {
 	gamestate.fullscreen();
 
-	if (gamestate.gameOver) return;
+	if (IsKeyPressed(KEY_P)) {
+		printf("SCORES: %d", gamestate.score);
+		std::cout << std::endl;
+	}
 
-	if (IsKeyReleased(KEY_R)) {
+	if (gamestate.gameOver) {
+		if (IsKeyReleased(KEY_R)) {
+			InitGame();
+			gamestate.gameOver = false;
+		}
+		return;
+	}
+	else if (IsKeyReleased(KEY_R)) {
 		InitGame();
 		gamestate.gameOver = false;
 	}
@@ -81,6 +91,8 @@ void UpdateGame() {
 		auto& enemy = enemies[i];
 		if (enemy.health <= 0) {
 			enemies[i].active = false;
+			gamestate.score++;
+
 		}
 		if (enemies[i].active) {
 			anyAlive = true;

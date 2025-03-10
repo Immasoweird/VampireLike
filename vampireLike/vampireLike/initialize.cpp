@@ -90,6 +90,8 @@ void InitGame() {
 	attack = false;
 	shootSpeed = 1200.0f;
 	waveCount = 1;
+	gamestate.score = 0;
+	player.lvl = 0;
 
 	shoot.resize(MAX_SHOOTS);
 	for (int i = 0; i < MAX_SHOOTS; i++) {
