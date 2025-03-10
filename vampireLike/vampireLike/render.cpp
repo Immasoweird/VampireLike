@@ -74,12 +74,17 @@ void DrawGame() {
 		{
 			if (shoot[i].active) {
 				DrawCircleV(shoot[i].position, shoot[i].radius, shoot[i].color);
-				DrawLineEx(
-					shoot[i].position,
-					Vector2Add(shoot[i].position, Vector2Scale(shoot[i].speed, 0.1f)),
-					3.0f,
-					BLACK
-				);
+				if (weapon.selectWeapon == 3) {
+					DrawLineEx(
+						shoot[i].position,
+						Vector2Add(shoot[i].position, Vector2Scale(shoot[i].speed, 0.05f)),
+						3.0f,
+						BLACK
+					);
+				}
+			}
+			if (shoot[i].explosion.active) {
+				DrawCircleV(shoot[i].explosion.body.center, shoot[i].explosion.body.radius, shoot[i].explosion.body.color);
 			}
 		}
 

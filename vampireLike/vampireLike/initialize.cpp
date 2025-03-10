@@ -67,13 +67,16 @@ void InitEnemies(int enemiesNumber) {
 		Vector2 position = { x,y };
 		Color color = BLUE;
 		auto active = true;
+		float health = 100;
+		float damage = 1;
 		Enemy current = Enemy{
 				body,
 				speed,
 				position,
 				color,
 				active,
-				100
+				health,
+				damage,
 		};
 		enemies.push_back(current);
 	}
@@ -94,13 +97,34 @@ void InitGame() {
 		shoot[i].speed = { 0,0 };
 		shoot[i].active = false;
 		shoot[i].color = WHITE;
+
+		Vector2 position = { 0,0 };
+		int radius = 250;
+		Vector2 center = { 0, 0 };
+		Color color = PINK;
+		Circle body = {
+			position,
+			radius,
+			center,
+			color,
+		};
+
+		bool active = false;
+		float damage = 100;
+
+		shoot[i].explosion = {
+			body,
+			active,
+			damage,
+		};
 	}
+
 	InitEnemies(10);
-	LoadTextures();
+	if (!spritesLoaded) {
+		LoadTextures();
+		spritesLoaded = true;
+	}
 }
-
-
-
 
 void LoadTextures() {
 	Image image1 = LoadImage("assets\\Background\\background.png");
@@ -128,7 +152,7 @@ void LoadTextures() {
 	ImageCrop(&image3, { 0,0,23,32 });
 	ImageResize(&image3, 100, 100);
 	for (int i = 0; i < MAX_ENEMIES; i++) {
-		enemies[i].texture=LoadTextureFromImage(image3);
+		enemies[i].texture = LoadTextureFromImage(image3);
 	}
 	UnloadImage(image3);
 

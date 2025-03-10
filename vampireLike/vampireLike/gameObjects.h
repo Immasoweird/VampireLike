@@ -4,20 +4,19 @@
 #include <map>
 #include <string>
 
-// Константы
+// ГЉГ®Г­Г±ГІГ Г­ГІГ»
 constexpr int SCREEN_WIDTH = 1600;
 constexpr int SCREEN_HEIGHT = 900;
 
-constexpr float SWORD_ATTACK_COOLDOWN = 100.0f; // Кулдаун для атаки копьём
-constexpr float SPEAR_ATTACK_COOLDOWN = 1.0f; // Кулдаун для атаки копьём
-constexpr float BOW_ATTACK_COOLDOWN = 1.0f; // Кулдаун для атаки копьём
+constexpr float SWORD_ATTACK_COOLDOWN = 100.0f; // ГЉГіГ«Г¤Г ГіГ­ Г¤Г«Гї Г ГІГ ГЄГЁ ГЄГ®ГЇГјВёГ¬
+constexpr float SPEAR_ATTACK_COOLDOWN = 1.0f; // ГЉГіГ«Г¤Г ГіГ­ Г¤Г«Гї Г ГІГ ГЄГЁ ГЄГ®ГЇГјВёГ¬
+constexpr float BOW_ATTACK_COOLDOWN = 1.0f; // ГЉГіГ«Г¤Г ГіГ­ Г¤Г«Гї Г ГІГ ГЄГЁ ГЄГ®ГЇГјВёГ¬
 
 constexpr int MAX_ENEMIES = 10;
 constexpr int MAX_SHOOTS = 200;
 
-// Основные структуры
+// ГЋГ±Г­Г®ГўГ­Г»ГҐ Г±ГІГ°ГіГЄГІГіГ°Г»
 struct Circle {
-
 	Vector2 position;
 	float radius;
 	Vector2 center;
@@ -39,7 +38,7 @@ struct TextureInfo {
 	Vector2 position;
 };
 
-// Класс Gamestate
+// ГЉГ«Г Г±Г± Gamestate
 class Gamestate {
 public:
 	Camera2D camera;
@@ -56,6 +55,7 @@ class Shape {
 
 
 struct Weapon {
+    int allWeapons = 4;
     int selectWeapon = 1;
     int attackRange = 200;
     float cooldown = 0.0f;
@@ -71,16 +71,21 @@ struct Weapon {
     };
 };
 
-
+struct Explosion {
+    Circle body;
+    bool active = false;
+    float damage;
+};
 struct Shoot {
     Vector2 position;
     Vector2 speed;
     float radius;
     bool active;
     Color color;
+    Explosion explosion;
 };
 
-// Класс WeaponList
+// ГЉГ«Г Г±Г± WeaponList
 class WeaponList {
 public:
 	std::map<std::string, int> weapon = {
@@ -90,7 +95,7 @@ public:
 	};
 };
 
-// Класс Player
+// ГЉГ«Г Г±Г± Player
 class Player {
 private:
 	void DrawAuraCirlce();
@@ -138,15 +143,14 @@ public:
 
 };
 
-// Структура Enemy
 struct Enemy {
-	Rectangle body;
-	Vector2 speed;
-	Vector2 position;
-	Color color;
-	bool active;
-	float health;
-	Vector2 size;
+    Rectangle body;
+    Vector2 speed;
+    Vector2 position;
+    Color color;
+    bool active;
+    float health;
+    float damage;
 
 	Texture2D texture;
 

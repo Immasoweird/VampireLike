@@ -14,3 +14,4 @@ extern int waveCount;
 extern Image IdleImage;
 extern Rectangle PlayerRectangle;
 extern int GlobalFrameCounter;
+extern bool spritesLoaded;
