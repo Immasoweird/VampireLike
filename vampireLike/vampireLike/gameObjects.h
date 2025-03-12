@@ -4,23 +4,23 @@
 #include <map>
 #include <string>
 
-// Константы
+// ГЉГ®Г­Г±ГІГ Г­ГІГ»
 constexpr int SCREEN_WIDTH = 1600;
 constexpr int SCREEN_HEIGHT = 900;
 
-constexpr float SWORD_ATTACK_COOLDOWN = 100.0f; // Кулдаун для атаки копьём
-constexpr float SPEAR_ATTACK_COOLDOWN = 1.0f; // Кулдаун для атаки копьём
-constexpr float BOW_ATTACK_COOLDOWN = 1.0f; // Кулдаун для атаки копьём
+constexpr float SWORD_ATTACK_COOLDOWN = 100.0f; // ГЉГіГ«Г¤Г ГіГ­ Г¤Г«Гї Г ГІГ ГЄГЁ ГЄГ®ГЇГјВёГ¬
+constexpr float SPEAR_ATTACK_COOLDOWN = 1.0f; // ГЉГіГ«Г¤Г ГіГ­ Г¤Г«Гї Г ГІГ ГЄГЁ ГЄГ®ГЇГјВёГ¬
+constexpr float BOW_ATTACK_COOLDOWN = 1.0f; // ГЉГіГ«Г¤Г ГіГ­ Г¤Г«Гї Г ГІГ ГЄГЁ ГЄГ®ГЇГјВёГ¬
 
 constexpr int MAX_ENEMIES = 10;
 constexpr int MAX_SHOOTS = 200;
 
-// Основные структуры
+// ГЋГ±Г­Г®ГўГ­Г»ГҐ Г±ГІГ°ГіГЄГІГіГ°Г»
 struct Circle {
-    Vector2 position;
-    float radius;
-    Vector2 center;
-    Color color;
+	Vector2 position;
+	float radius;
+	Vector2 center;
+	Color color;
 };
 
 struct Triangle {
@@ -34,18 +34,18 @@ struct Triangle {
 };
 
 struct TextureInfo {
-    Texture2D texture;
-    Vector2 position;
+	Texture2D texture;
+	Vector2 position;
 };
 
-// Класс Gamestate
+// ГЉГ«Г Г±Г± Gamestate
 class Gamestate {
 public:
-    Camera2D camera;
-    int score = 0;
-    bool gameOver = false;
+	Camera2D camera;
+	int score = 0;
+	bool gameOver = false;
 
-    void fullscreen();
+	void fullscreen();
 };
 
 //classes
@@ -85,59 +85,65 @@ struct Shoot {
     Explosion explosion;
 };
 
-// Класс WeaponList
+// ГЉГ«Г Г±Г± WeaponList
 class WeaponList {
 public:
-    std::map<std::string, int> weapon = {
-        {"sword", 1},
-        {"bow", 2},
-        {"axe", 3}
-    };
+	std::map<std::string, int> weapon = {
+		{"sword", 1},
+		{"bow", 2},
+		{"axe", 3}
+	};
 };
 
-// Класс Player
+// ГЉГ«Г Г±Г± Player
 class Player {
 private:
-    void DrawAuraCirlce();
+	void DrawAuraCirlce();
 public:
-    Vector2 position;
-    Circle damageAura;
-    Vector2 size;
-    float speed;
+	Vector2 position;
+	Circle damageAura;
+	Vector2 size;
+	Vector2 direction;
+	float speed;
 
-    int luck;
-    int reroll;
-    float evasion;
-    float lifesteal;
-    float collectArea;
+	int lvl;
+	int luck;
+	int reroll;
+	float evasion;
+	float lifesteal;
+	float collectArea;
 
-    int damage;
-    int attackRange;
-    int attackSpeed;
-    float attackAngle;
-    float critDamage;
-    float critChance;
-    float cooldownTimer; 
+	int damage;
+	int attackRange;
+	int attackSpeed;
+	float attackAngle;
+	float critDamage;
+	float critChance;
+	float cooldownTimer;
+	int FrameCounter;
 
-    int health;
-    float hpRegen;
-    int armor;
+	int health;
+	float hpRegen;
+	int armor;
 
-    bool isDashing;
-    float dashDuration;
-    float dashSpeed;
-    float dashCooldown;
-    float dashTimer;    
+	bool isDashing;
+	float dashDuration;
+	float dashSpeed;
+	float dashCooldown;
+	float dashTimer;
 
-    Texture2D texture;
+	Texture2D texture;
+	Texture2D runTextureRight;
+	Texture2D runTextureLeft;
 
-    Player();
-    void Update();
-    void Draw();
+	Player();
+	void Update();
+	void Draw();
+	void DrawRunRight();
+	void DrawRunLeft();
 
 };
 
-// Структура Enemy
 struct Enemy {
     Rectangle body;
     Vector2 speed;
@@ -147,8 +153,8 @@ struct Enemy {
     float health;
     float damage;
 
-    Texture2D texture;
+	Texture2D texture;
 
-    void Draw();
+	void Draw();
 
 };

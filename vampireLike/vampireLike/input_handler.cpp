@@ -3,13 +3,17 @@
 #include <raymath.h>
 
 void Gamestate::fullscreen() {
-    if (IsKeyReleased(KEY_F11)) ToggleBorderlessWindowed();
+	if (IsKeyReleased(KEY_F11)) ToggleBorderlessWindowed();
 }
 
 void Player::Update() {
+	GlobalFrameCounter++;
+	if (GlobalFrameCounter % 10 == 0)
+	{
+		FrameCounter++;
+	}
 	float deltaTime = GetFrameTime(); // Время между кадрами
 
-	Vector2 direction = { 0, 0 };
 	if (IsKeyDown(KEY_D) or IsKeyDown(KEY_RIGHT)) direction.x += 1;
 	if (IsKeyDown(KEY_A) or IsKeyDown(KEY_LEFT)) direction.x -= 1;
 	if (IsKeyDown(KEY_W) or IsKeyDown(KEY_UP)) direction.y -= 1;
@@ -52,6 +56,4 @@ void Player::Update() {
 
 	Rectangle playerRect = { position.x, position.y, size.x, size.y };
 	Rectangle testRect = { 500, 500, 200, 200 };
-
-
 }

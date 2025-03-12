@@ -13,6 +13,7 @@ Player::Player() {
 	this->health = 100;
 	this->hpRegen = 0.5;
 	this->armor = 10;
+	this->direction = { 0,0 };
 
 	this->luck = 0;
 	this->reroll = 0;
@@ -34,6 +35,7 @@ Player::Player() {
 	this->dashTimer = 0.0f;
 
 	this->texture = {};
+	this->FrameCounter = 1;
 }
 
 void InitEnemies(int enemiesNumber) {
@@ -75,6 +77,7 @@ void InitEnemies(int enemiesNumber) {
 				active,
 				health,
 				damage,
+				enemyTexture
 		};
 		enemies.push_back(current);
 	}
@@ -84,10 +87,15 @@ void InitGame() {
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
 	gamestate.camera.zoom = 0.5f;
 	player = {};
+	player.texture = playerTexture;
+	player.runTextureLeft = playerRunTextureLeft;
+	player.runTextureRight = playerRunTextureRight;
 	attack_triangle = { };
 	attack = false;
 	shootSpeed = 1200.0f;
 	waveCount = 1;
+	gamestate.score = 0;
+	player.lvl = 0;
 
 	shoot.resize(MAX_SHOOTS);
 	for (int i = 0; i < MAX_SHOOTS; i++) {
@@ -132,16 +140,28 @@ void LoadTextures() {
 	UnloadImage(image1);
 
 	Image image2 = LoadImage("assets\\_Idle.png");
-	ImageCrop(&image2, { 37,41,35,38 });
-	ImageResize(&image2, 100, 100);
-	player.texture = LoadTextureFromImage(image2);
+	ImageResize(&image2, image2.width * 3, image2.height * 3);
+	playerTexture = LoadTextureFromImage(image2);
+	player.texture = playerTexture;
+
+	image2 = LoadImage("assets\\_RunRight.png");
+	ImageResize(&image2, image2.width * 3, image2.height * 3);
+	playerRunTextureRight = LoadTextureFromImage(image2);
+	player.runTextureRight = playerRunTextureRight;
+
+
+	image2 = LoadImage("assets\\_RunLeft.png");
+	ImageResize(&image2, image2.width * 3, image2.height * 3);
+	playerRunTextureLeft = LoadTextureFromImage(image2);
+	player.runTextureLeft = playerRunTextureLeft;
 	UnloadImage(image2);
 
 	Image image3 = LoadImage("assets\\SkeletonIdle.png");
 	ImageCrop(&image3, { 0,0,23,32 });
 	ImageResize(&image3, 100, 100);
+	enemyTexture = LoadTextureFromImage(image3);
 	for (int i = 0; i < MAX_ENEMIES; i++) {
-		enemies[i].texture = LoadTextureFromImage(image3);
+		enemies[i].texture = enemyTexture;
 	}
 	UnloadImage(image3);
 
