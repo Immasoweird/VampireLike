@@ -62,12 +62,12 @@ void HandleCollision(Enemy& a, Enemy& b) {
 void UpdateGame() {
 	gamestate.fullscreen();
 
-	if (gamestate.gameOver) return;
-
 	if (IsKeyReleased(KEY_R)) {
 		InitGame();
 		gamestate.gameOver = false;
 	}
+	if (gamestate.gameOver) return;
+
 
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
