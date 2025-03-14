@@ -55,8 +55,10 @@ void HandleCollision(Enemy& a, Enemy& b) {
 	}
 	a.body.x = position_a.x - radius_a;
 	a.body.y = position_a.y - radius_a;
+	a.position = { a.body.x,a.body.y };
 	b.body.x = position_b.x - radius_b;
 	b.body.y = position_b.y - radius_b;
+	b.position = { b.body.x,b.body.y };
 }
 
 void UpdateGame() {
@@ -122,8 +124,18 @@ void UpdateGame() {
 		enemies[i].body.y = enemies[i].position.y;
 		if (enemies[i].active and player.health > 0 and CheckCollisionRecs({ player.position.x, player.position.y }, enemies[i].body)) {
 			player.health -= enemies[i].damage;
-			std::cout << player.health << std::endl;
-			
+			std::cout << player.health << std::endl;	
+		}
+	}
+
+	for (int i = 0; i < enemies.size() - 1; i++)
+	{
+		if (enemies[i].active) {
+			for (int j = i + 1; j < enemies.size(); j++)
+			{
+				if(enemies[j].active)
+					HandleCollision(enemies[i], enemies[j]);
+			}
 		}
 	}
 
