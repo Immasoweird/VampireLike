@@ -11,6 +11,8 @@ extern Triangle attack_triangle;
 extern bool attack;
 extern float shootSpeed;
 extern int waveCount;
+extern int coins;
+extern int currentScreen;
 extern Image IdleImage;
 extern Rectangle PlayerRectangle;
 extern int GlobalFrameCounter;
@@ -20,3 +22,6 @@ extern Texture2D enemyTexture;
 extern Texture2D playerTexture;
 extern Texture2D playerRunTextureRight;
 extern Texture2D playerRunTextureLeft;
+
+extern std::vector<Stat> gameStats;
+extern Button upgradeButton;

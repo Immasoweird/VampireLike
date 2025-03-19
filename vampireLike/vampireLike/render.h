@@ -2,3 +2,4 @@
 #include "gameObjects.h"
 
 void DrawGame();
+void DrawShop();

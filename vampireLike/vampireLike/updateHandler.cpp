@@ -69,14 +69,7 @@ void UpdateGame() {
 		std::cout << std::endl;
 	}
 
-	if (gamestate.gameOver) {
-		if (IsKeyReleased(KEY_R)) {
-			InitGame();
-			gamestate.gameOver = false;
-		}
-		return;
-	}
-	else if (IsKeyReleased(KEY_R)) {
+	if (IsKeyReleased(KEY_R)) {
 		InitGame();
 		gamestate.gameOver = false;
 	}
@@ -157,4 +150,32 @@ void UpdateGame() {
 	if (player.health < 1) {
 		gamestate.gameOver = true;
 	}
+}
+
+
+void Purchase(int index) {
+	coins -= upgradeButton.cost;
+	gameStats[index].lvl++;
+
+}
+
+
+void UpdateShop() {
+	gamestate.fullscreen();
+
+	if (IsKeyPressed(KEY_P)) {
+		printf("SCORES: %d", gamestate.score);
+		std::cout << std::endl;
+	}
+
+	if (IsKeyReleased(KEY_R)) {
+		InitGame();
+		gamestate.gameOver = false;
+	}
+	if (gamestate.gameOver) return;
+
+
+	player.Update();
+	Vector2 mousePosition = GetMousePosition();
+
 }

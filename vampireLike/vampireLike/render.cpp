@@ -109,3 +109,42 @@ void DrawGame() {
 	EndMode2D();
 	EndDrawing();
 }
+
+
+
+void DrawShop() {
+	BeginDrawing();
+	ClearBackground(GREEN);
+	if (player.direction.x > 0)
+	{
+		isRunningLeft = false;
+		player.DrawRunRight();
+	}
+	else if (player.direction.x < 0)
+	{
+		isRunningLeft = true;
+		player.DrawRunLeft();
+	}
+	else if (player.direction.y > 0)
+	{
+		if (isRunningLeft)
+			player.DrawRunLeft();
+		else
+			player.DrawRunRight();
+	}
+	else if (player.direction.y < 0)
+	{
+		if (isRunningLeft)
+			player.DrawRunLeft();
+		else
+			player.DrawRunRight();
+	}
+	else
+	{
+		player.Draw();
+	}
+
+	player.direction = { 0,0 };
+	EndDrawing();
+
+}

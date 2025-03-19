@@ -11,6 +11,8 @@ Triangle attack_triangle;
 bool attack;
 float shootSpeed;
 int waveCount;
+int coins;
+int currentScreen;
 Image IdleImage;
 Rectangle PlayerRectangle;
 int GlobalFrameCounter;
@@ -20,3 +22,7 @@ Texture2D enemyTexture;
 Texture2D playerTexture;
 Texture2D playerRunTextureRight;
 Texture2D playerRunTextureLeft;
+
+Button upgradeButton;
+std::vector<Stat> gameStats;
+
