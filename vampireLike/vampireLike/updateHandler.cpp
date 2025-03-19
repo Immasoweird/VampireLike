@@ -55,19 +55,26 @@ void HandleCollision(Enemy& a, Enemy& b) {
 	}
 	a.body.x = position_a.x - radius_a;
 	a.body.y = position_a.y - radius_a;
+	a.position = { a.body.x,a.body.y };
 	b.body.x = position_b.x - radius_b;
 	b.body.y = position_b.y - radius_b;
+	b.position = { b.body.x,b.body.y };
 }
 
 void UpdateGame() {
 	gamestate.fullscreen();
 
-	if (gamestate.gameOver) return;
+	if (IsKeyPressed(KEY_P)) {
+		printf("SCORES: %d", gamestate.score);
+		std::cout << std::endl;
+	}
 
 	if (IsKeyReleased(KEY_R)) {
 		InitGame();
 		gamestate.gameOver = false;
 	}
+	if (gamestate.gameOver) return;
+
 
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
@@ -80,7 +87,10 @@ void UpdateGame() {
 	for (int i = 0; i < enemies.size(); i++) {
 		auto& enemy = enemies[i];
 		if (enemy.health <= 0) {
-			enemies[i].active = false;
+			if (enemies[i].active) {
+				gamestate.score++;
+				enemies[i].active = false;
+			}
 		}
 		if (enemies[i].active) {
 			anyAlive = true;
@@ -94,13 +104,13 @@ void UpdateGame() {
 	weaponHandler();
 
 
-	// Обновление камеры (после движения игрока)
-	Vector2 desiredTarget = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // Центр игрока
-	gamestate.camera.target = Vector2Lerp(gamestate.camera.target, desiredTarget, 0.1f); // Плавное преследование
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
+	Vector2 desiredTarget = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+	gamestate.camera.target = Vector2Lerp(gamestate.camera.target, desiredTarget, 0.1f); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
-	// После Lerp добавьте ограничения (пример):
-	Vector2 minBounds = { -5000, -5000 };            // Левый верхний угол уровня
-	Vector2 maxBounds = { 5000, 5000 };      // Правый нижний угол уровня
+	// пїЅпїЅпїЅпїЅпїЅ Lerp пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ):
+	Vector2 minBounds = { -5000, -5000 };            // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+	Vector2 maxBounds = { 5000, 5000 };      // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 	gamestate.camera.target.x = Clamp(gamestate.camera.target.x,
 		minBounds.x + gamestate.camera.offset.x,
@@ -111,7 +121,7 @@ void UpdateGame() {
 		maxBounds.y - gamestate.camera.offset.y);
 
 
-	// Движение противников
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		auto playerPosition = player.position;
@@ -122,12 +132,50 @@ void UpdateGame() {
 		enemies[i].body.y = enemies[i].position.y;
 		if (enemies[i].active and player.health > 0 and CheckCollisionRecs({ player.position.x, player.position.y }, enemies[i].body)) {
 			player.health -= enemies[i].damage;
-			std::cout << player.health << std::endl;
-			
+			std::cout << player.health << std::endl;	
+		}
+	}
+
+	for (int i = 0; i < enemies.size() - 1; i++)
+	{
+		if (enemies[i].active) {
+			for (int j = i + 1; j < enemies.size(); j++)
+			{
+				if(enemies[j].active)
+					HandleCollision(enemies[i], enemies[j]);
+			}
 		}
 	}
 
 	if (player.health < 1) {
 		gamestate.gameOver = true;
 	}
+}
+
+
+void Purchase(int index) {
+	coins -= upgradeButton.cost;
+	gameStats[index].lvl++;
+
+}
+
+
+void UpdateShop() {
+	gamestate.fullscreen();
+
+	if (IsKeyPressed(KEY_P)) {
+		printf("SCORES: %d", gamestate.score);
+		std::cout << std::endl;
+	}
+
+	if (IsKeyReleased(KEY_R)) {
+		InitGame();
+		gamestate.gameOver = false;
+	}
+	if (gamestate.gameOver) return;
+
+
+	player.Update();
+	Vector2 mousePosition = GetMousePosition();
+
 }

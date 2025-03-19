@@ -3,6 +3,8 @@
 #include <raymath.h>
 #include "gameObjects.h"
 
+
+
 Player::Player() {
 	this->position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	this->damageAura = { {position.x + 50, position.y + 50},200,{position.x + 50, position.y + 50},RED };
@@ -97,6 +99,22 @@ void InitGame() {
 	attack = false;
 	shootSpeed = 1200.0f;
 	waveCount = 1;
+	gamestate.score = 0;
+	player.lvl = 0;
+
+	upgradeButton = { "damage",
+10,
+"adawd",
+	};
+
+	Stat atackStat = { "damage",
+	1,
+	10,
+	111,
+
+	[](int lvl) {return 1 * lvl;} };
+
+	gameStats.push_back(atackStat);
 
 	shoot.resize(MAX_SHOOTS);
 	for (int i = 0; i < MAX_SHOOTS; i++) {

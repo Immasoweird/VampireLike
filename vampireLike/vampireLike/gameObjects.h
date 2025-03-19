@@ -3,7 +3,7 @@
 #include <vector>
 #include <map>
 #include <string>
-
+#include <functional>
 // Êîíñòàíòû
 constexpr int SCREEN_WIDTH = 1600;
 constexpr int SCREEN_HEIGHT = 900;
@@ -14,6 +14,25 @@ constexpr float BOW_ATTACK_COOLDOWN = 1.0f; // Êóëäàóí äëÿ àòàêè 
 
 constexpr int MAX_ENEMIES = 10;
 constexpr int MAX_SHOOTS = 200;
+
+
+
+struct Button {
+	std::string title;
+	int cost;
+	std::string image;
+};
+
+
+struct Stat {
+	std::string name;
+	int lvl;
+	int price;
+	int value;
+
+	std::function<int(int)> lvlup;
+};
+
 
 // Îñíîâíûå ñòðóêòóðû
 struct Circle {
@@ -106,6 +125,7 @@ public:
 	Vector2 direction;
 	float speed;
 
+	int lvl;
 	int luck;
 	int reroll;
 	float evasion;
