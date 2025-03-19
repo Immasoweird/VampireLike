@@ -132,12 +132,15 @@ public:
 	float dashTimer;
 
 	Texture2D texture;
+	Texture2D idleTextureRight;
+	Texture2D idleTextureLeft;
 	Texture2D runTextureRight;
 	Texture2D runTextureLeft;
 
 	Player();
 	void Update();
-	void Draw();
+	void DrawIdleRight();
+	void DrawIdleLeft();
 	void DrawRunRight();
 	void DrawRunLeft();
 
