@@ -36,7 +36,8 @@ Player::Player() {
 	this->cooldownTimer = 0.0f; // Таймер для отслеживания времени восстановления
 	this->dashTimer = 0.0f;
 
-	this->texture = {};
+	this->idleTextureLeft = {};
+	this->idleTextureRight = {};
 	this->FrameCounter = 1;
 }
 
@@ -92,6 +93,8 @@ void InitGame() {
 	player.texture = playerTexture;
 	player.runTextureLeft = playerRunTextureLeft;
 	player.runTextureRight = playerRunTextureRight;
+	player.idleTextureLeft = playerIdleTextureLeft;
+	player.idleTextureRight = playerIdleTextureRight;
 	attack_triangle = { };
 	attack = false;
 	shootSpeed = 1200.0f;
@@ -155,16 +158,20 @@ void LoadTextures() {
 	background.position = { -5000, -5000 };
 	UnloadImage(image1);
 
-	Image image2 = LoadImage("assets\\_Idle.png");
+	Image image2 = LoadImage("assets\\_IdleRight.png");
 	ImageResize(&image2, image2.width * 3, image2.height * 3);
-	playerTexture = LoadTextureFromImage(image2);
-	player.texture = playerTexture;
+	playerIdleTextureRight = LoadTextureFromImage(image2);
+	player.idleTextureRight = playerIdleTextureRight;
+	
+	image2 = LoadImage("assets\\_IdleLeft.png");
+	ImageResize(&image2, image2.width * 3, image2.height * 3);
+	playerIdleTextureLeft = LoadTextureFromImage(image2);
+	player.idleTextureLeft = playerIdleTextureLeft;
 
 	image2 = LoadImage("assets\\_RunRight.png");
 	ImageResize(&image2, image2.width * 3, image2.height * 3);
 	playerRunTextureRight = LoadTextureFromImage(image2);
 	player.runTextureRight = playerRunTextureRight;
-
 
 	image2 = LoadImage("assets\\_RunLeft.png");
 	ImageResize(&image2, image2.width * 3, image2.height * 3);

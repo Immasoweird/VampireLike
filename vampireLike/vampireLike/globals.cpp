@@ -22,7 +22,7 @@ Texture2D enemyTexture;
 Texture2D playerTexture;
 Texture2D playerRunTextureRight;
 Texture2D playerRunTextureLeft;
-
+Texture2D playerIdleTextureRight;
+Texture2D playerIdleTextureLeft;
 Button upgradeButton;
 std::vector<Stat> gameStats;
-

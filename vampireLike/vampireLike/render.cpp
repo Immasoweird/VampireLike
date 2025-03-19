@@ -6,11 +6,18 @@ void Player::DrawAuraCirlce() {
 	DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
 }
 
-void Player::Draw() {
+void Player::DrawIdleRight() {
 	DrawAuraCirlce();
 	DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
-	DrawTextureRec(texture, { ((float)texture.width / 10) * (FrameCounter % 10), 0, (float)texture.width / 10, (float)texture.height }, { position.x - 115, position.y - 140 }, RAYWHITE);
+	DrawTextureRec(idleTextureRight, { ((float)idleTextureRight.width / 10) * (FrameCounter % 10), 0, (float)idleTextureRight.width / 10, (float)idleTextureRight.height }, { position.x - 115, position.y - 140 }, RAYWHITE);
+}
+
+void Player::DrawIdleLeft() {
+	DrawAuraCirlce();
+	DrawRectangleV(position, size, GOLD);
+	//DrawTexture(texture, position.x, position.y, RAYWHITE);
+	DrawTextureRec(idleTextureLeft, { ((float)idleTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)idleTextureLeft.width / 10, (float)idleTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
 
 void Player::DrawRunRight() {
@@ -55,20 +62,25 @@ void DrawGame() {
 		{
 			if (isRunningLeft)
 				player.DrawRunLeft();
-			else 
+			else
 				player.DrawRunRight();
 		}
 		else if (player.direction.y < 0)
 		{
 			if (isRunningLeft)
 				player.DrawRunLeft();
-			else 
+			else
 				player.DrawRunRight();
 		}
 		else
 		{
-			player.Draw();
+			if (isRunningLeft)
+				player.DrawIdleLeft();
+			else
+				player.DrawIdleRight();
+
 		}
+
 
 		player.direction = { 0,0 };
 		if (attack)
