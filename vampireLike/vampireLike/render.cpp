@@ -152,9 +152,11 @@ void DrawShop() {
 			player.DrawRunRight();
 	}
 	else
-	{
-		player.Draw();
-	}
+		if (isRunningLeft)
+			player.DrawIdleLeft();
+		else
+			player.DrawIdleRight();
+
 
 	player.direction = { 0,0 };
 	EndDrawing();
