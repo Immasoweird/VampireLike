@@ -2,6 +2,7 @@
 #include "globals.h"
 #include <raymath.h>
 #include "gameObjects.h"
+#include <iostream>
 
 
 
@@ -85,6 +86,18 @@ void InitEnemies(int enemiesNumber) {
 		enemies.push_back(current);
 	}
 }
+
+void InitShop() {
+	Button button = {
+		"Press me",
+		{10,10,200,50}
+	};
+	button.onClick = []() {
+		std::cout << "Button clicked!" << std::endl;
+	};
+	buttons.push_back(button);
+}
+
 void InitGame() {
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
@@ -102,10 +115,6 @@ void InitGame() {
 	gamestate.score = 0;
 	player.lvl = 0;
 
-	upgradeButton = { "damage",
-10,
-"adawd",
-	};
 
 	Stat atackStat = { "damage",
 	1,

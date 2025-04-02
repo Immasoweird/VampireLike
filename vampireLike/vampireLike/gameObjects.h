@@ -18,9 +18,24 @@ constexpr int MAX_SHOOTS = 200;
 
 
 struct Button {
-	std::string title;
-	int cost;
-	std::string image;
+	std::string label;
+	Rectangle body;
+	std::function<void()> onClick;
+
+	bool checkClick(Vector2 mousePosition) {
+		if (CheckCollisionPointRec(mousePosition, body)) {
+			if (onClick) {
+				onClick();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	void Draw() {
+		DrawRectangle(body.x, body.y, body.width, body.height, RED);
+		DrawText(label.c_str(), body.x, body.y, 14, BLACK);
+	}
 };
 
 
@@ -30,7 +45,7 @@ struct Stat {
 	int price;
 	int value;
 
-	std::function<int(int)> lvlup;
+	std::function<int(int)> lvlup=nullptr;
 };
 
 

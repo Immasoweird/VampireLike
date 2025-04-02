@@ -12,6 +12,8 @@ int main() {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Devil May Cry 9");
 	SetTargetFPS(165);
 	InitGame();
+	InitShop();
+
 	
 	while (!WindowShouldClose()) {
 		if (IsKeyPressed(KEY_RIGHT_BRACKET)) currentScreen++;

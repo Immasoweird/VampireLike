@@ -159,6 +159,9 @@ void DrawShop() {
 
 
 	player.direction = { 0,0 };
+	for (auto& button : buttons) {
+		button.Draw();
+	}
 	EndDrawing();
 
 }

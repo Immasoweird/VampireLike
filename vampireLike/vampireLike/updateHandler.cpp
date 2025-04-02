@@ -152,13 +152,13 @@ void UpdateGame() {
 	}
 }
 
-
-void Purchase(int index) {
-	coins -= upgradeButton.cost;
-	gameStats[index].lvl++;
-
-}
-
+//
+//void Purchase(int index) {
+//	coins -= upgradeButton.cost;
+//	gameStats[index].lvl++;
+//
+//}
+//
 
 void UpdateShop() {
 	gamestate.fullscreen();
@@ -177,5 +177,8 @@ void UpdateShop() {
 
 	player.Update();
 	Vector2 mousePosition = GetMousePosition();
-
+	for (auto& button : buttons) {
+		if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))	
+			button.checkClick(mousePosition);
+	}
 }
