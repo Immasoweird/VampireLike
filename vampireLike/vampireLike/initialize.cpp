@@ -90,12 +90,22 @@ void InitEnemies(int enemiesNumber) {
 void InitShop() {
 	Button button = {
 		"Press me",
-		{10,10,200,50}
+		{800,450,200,50}
 	};
 	button.onClick = []() {
 		std::cout << "Button clicked!" << std::endl;
 	};
 	buttons.push_back(button);
+
+	Button button1 = {
+		"Press me",
+		{800,250,200,50}
+	};
+	button1.onClick = []() {
+		std::cout << "Button clicked!" << std::endl;
+		};
+	buttons.push_back(button1);
+
 }
 
 void InitGame() {

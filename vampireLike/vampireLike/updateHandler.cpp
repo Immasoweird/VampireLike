@@ -175,7 +175,7 @@ void UpdateShop() {
 	if (gamestate.gameOver) return;
 
 
-	player.Update();
+	
 	Vector2 mousePosition = GetMousePosition();
 	for (auto& button : buttons) {
 		if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))	

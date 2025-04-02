@@ -16,9 +16,9 @@ int main() {
 
 	
 	while (!WindowShouldClose()) {
-		if (IsKeyPressed(KEY_RIGHT_BRACKET)) currentScreen++;
+		if (IsKeyPressed(KEY_RIGHT_BRACKET) and currentScreen<1) currentScreen++;
 		
-		else if (IsKeyPressed(KEY_LEFT_BRACKET)) currentScreen--;
+		else if (IsKeyPressed(KEY_LEFT_BRACKET) and currentScreen > 0) currentScreen--;
 
 		switch (currentScreen) {
 		case 0:
