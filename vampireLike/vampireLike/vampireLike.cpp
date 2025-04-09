@@ -13,10 +13,11 @@ int main() {
 	SetTargetFPS(165);
 	InitGame();
 	InitShop();
+	
 
 	
 	while (!WindowShouldClose()) {
-		if (IsKeyPressed(KEY_RIGHT_BRACKET) and currentScreen<1) currentScreen++;
+		if (IsKeyPressed(KEY_RIGHT_BRACKET) and currentScreen<2) currentScreen++;
 		
 		else if (IsKeyPressed(KEY_LEFT_BRACKET) and currentScreen > 0) currentScreen--;
 
@@ -30,6 +31,8 @@ int main() {
 			DrawShop();
 			break;
 		case 2:
+			UpdateMenu();
+			DrawMenu();
 			break;
 		default:
 			break;

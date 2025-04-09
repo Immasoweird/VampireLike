@@ -3,6 +3,7 @@
 
 void UpdateGame();
 void UpdateShop();
+void UpdateMenu();
 
 bool CheckCollisionAttackRange(const Triangle& triangle, const Rectangle& body);
 bool CheckCollisionAreaEnemy(Enemy& enemy_p, Circle& dmgArea);

@@ -122,7 +122,15 @@ void DrawGame() {
 	EndDrawing();
 }
 
+void DrawMenu() {
+	BeginDrawing();
+	ClearBackground(GRAY);
 
+	for (auto& button : buttons) {
+		button.Draw();
+	}
+	EndDrawing();
+}
 
 void DrawShop() {
 	BeginDrawing();

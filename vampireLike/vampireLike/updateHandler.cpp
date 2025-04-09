@@ -182,3 +182,11 @@ void UpdateShop() {
 			button.checkClick(mousePosition);
 	}
 }
+
+void UpdateMenu() {
+	Vector2 mousePosition = GetMousePosition();
+	for (auto& button : buttons) {
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+			button.checkClick(mousePosition);
+	}
+}

@@ -108,6 +108,29 @@ void InitShop() {
 
 }
 
+void InitMenu() {
+	Button start = {
+		"Начать игру",
+		{800,450,200,50}
+	};
+	start.onClick = []() {
+		std::cout << "Button clicked!" << std::endl;
+		currentScreen = 0;
+		};
+	buttons.push_back(start);
+
+	Button exit = {
+		"Выйти",
+		{800,250,200,50}
+	};
+	exit.onClick = []() {
+		std::cout << "Button clicked!" << std::endl;
+		CloseWindow();
+		};
+	buttons.push_back(exit);
+}
+
+
 void InitGame() {
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
