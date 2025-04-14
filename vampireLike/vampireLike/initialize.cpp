@@ -89,39 +89,60 @@ void InitEnemies(int enemiesNumber) {
 
 void InitShop() {
 	Button button = {
-		"Press me",
-		{800,450,200,50}
+		"Item1",
+		{100,SCREEN_HEIGHT/3,200,50}
 	};
 	button.onClick = []() {
-		std::cout << "Button clicked!" << std::endl;
+		std::cout << "Bought!" << std::endl;
 	};
 	buttons.push_back(button);
 
 	Button button1 = {
-		"Press me",
-		{800,250,200,50}
+		"Item2",
+		{400,SCREEN_HEIGHT / 3,200,50}
+
 	};
 	button1.onClick = []() {
-		std::cout << "Button clicked!" << std::endl;
+		std::cout << "Bought!" << std::endl;
 		};
 	buttons.push_back(button1);
 
+	Button button2 = {
+		"Item3",
+		{700,SCREEN_HEIGHT / 3,200,50}
+	};
+	button2.onClick = []() {
+		std::cout << "Bought!" << std::endl;
+		};
+	buttons.push_back(button2);
+
+
+	Button button3 = {
+	"Go on",
+	{SCREEN_WIDTH/2-100,SCREEN_HEIGHT - 100,200,50}
+	};
+	button3.onClick = []() {
+		currentScreen = 2;
+		};
+	buttons.push_back(button3);
 }
 
 void InitMenu() {
 	Button start = {
-		"Начать игру",
-		{800,450,200,50}
+		"Start",
+		{SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2-150,200,50}
 	};
 	start.onClick = []() {
 		std::cout << "Button clicked!" << std::endl;
-		currentScreen = 0;
+		currentScreen = 2;
+		buttons.clear();
+		InitGame();
 		};
 	buttons.push_back(start);
 
 	Button exit = {
-		"Выйти",
-		{800,250,200,50}
+		"Exit",
+		{SCREEN_WIDTH/2-100,SCREEN_HEIGHT/2+150,200,50}
 	};
 	exit.onClick = []() {
 		std::cout << "Button clicked!" << std::endl;

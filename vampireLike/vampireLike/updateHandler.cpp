@@ -97,6 +97,8 @@ void UpdateGame() {
 		}
 	}
 	if (!anyAlive) {
+		InitShop();
+		currentScreen = 1;
 		printf("Wave: %d \n", ++waveCount);
 		InitEnemies(waveCount * 2 + 10);
 	}
