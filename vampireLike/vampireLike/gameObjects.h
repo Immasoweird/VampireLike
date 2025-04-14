@@ -117,7 +117,7 @@ public:
 // Êëàññ Player
 class Player {
 private:
-	void DrawAuraCirlce();
+	void DrawAuraCircle();
 public:
 	Vector2 position;
 	Circle damageAura;
@@ -156,6 +156,8 @@ public:
 	Texture2D idleTextureLeft;
 	Texture2D runTextureRight;
 	Texture2D runTextureLeft;
+	Texture2D swordAttack;
+
 
 	Player();
 	void Update();
@@ -163,6 +165,7 @@ public:
 	void DrawIdleLeft();
 	void DrawRunRight();
 	void DrawRunLeft();
+	void SwordAttack();
 
 };
 

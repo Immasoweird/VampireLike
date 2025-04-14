@@ -24,5 +24,6 @@ extern Texture2D playerRunTextureRight;
 extern Texture2D playerRunTextureLeft;
 extern Texture2D playerIdleTextureRight;
 extern Texture2D playerIdleTextureLeft;
+extern Texture2D playerSwordAttack;
 extern std::vector<Stat> gameStats;
 extern Button upgradeButton;

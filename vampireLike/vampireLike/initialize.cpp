@@ -178,6 +178,12 @@ void LoadTextures() {
 	playerRunTextureLeft = LoadTextureFromImage(image2);
 	player.runTextureLeft = playerRunTextureLeft;
 	UnloadImage(image2);
+	
+	image2 = LoadImage("assets\\SwordAttack.png");
+	ImageResize(&image2, image2.width * 3, image2.height * 3);
+	playerSwordAttack = LoadTextureFromImage(image2);
+	player.swordAttack = playerSwordAttack;
+	UnloadImage(image2);
 
 	Image image3 = LoadImage("assets\\SkeletonIdle.png");
 	ImageCrop(&image3, { 0,0,23,32 });

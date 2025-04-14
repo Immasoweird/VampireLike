@@ -2,36 +2,43 @@
 #include "globals.h"
 #include "raymath.h"
 
-void Player::DrawAuraCirlce() {
+void Player::DrawAuraCircle() {
 	DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
 }
 
 void Player::DrawIdleRight() {
-	DrawAuraCirlce();
+	DrawAuraCircle();
 	DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
 	DrawTextureRec(idleTextureRight, { ((float)idleTextureRight.width / 10) * (FrameCounter % 10), 0, (float)idleTextureRight.width / 10, (float)idleTextureRight.height }, { position.x - 115, position.y - 140 }, RAYWHITE);
 }
 
 void Player::DrawIdleLeft() {
-	DrawAuraCirlce();
+	DrawAuraCircle();
 	DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
 	DrawTextureRec(idleTextureLeft, { ((float)idleTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)idleTextureLeft.width / 10, (float)idleTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
 
 void Player::DrawRunRight() {
-	DrawAuraCirlce();
+	DrawAuraCircle();
 	DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
 	DrawTextureRec(runTextureRight, { ((float)runTextureRight.width / 10) * (FrameCounter % 10), 0, (float)runTextureRight.width / 10, (float)runTextureRight.height }, { position.x - 115, position.y - 140 }, RAYWHITE);
 }
 
 void Player::DrawRunLeft() {
-	DrawAuraCirlce();
+	DrawAuraCircle();
 	DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
 	DrawTextureRec(runTextureLeft, { ((float)runTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)runTextureLeft.width / 10, (float)runTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
+}
+
+void Player::SwordAttack() {
+	DrawAuraCircle();
+	DrawRectangleV(position, size, GOLD);
+	//DrawTexture(texture, position.x, position.y, RAYWHITE);
+	DrawTextureRec(swordAttack, { ((float)swordAttack.width / 5) * (FrameCounter % 5), 0, (float)swordAttack.width / 5, (float)swordAttack.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
 
 
@@ -127,38 +134,6 @@ void DrawGame() {
 void DrawShop() {
 	BeginDrawing();
 	ClearBackground(GREEN);
-	if (player.direction.x > 0)
-	{
-		isRunningLeft = false;
-		player.DrawRunRight();
-	}
-	else if (player.direction.x < 0)
-	{
-		isRunningLeft = true;
-		player.DrawRunLeft();
-	}
-	else if (player.direction.y > 0)
-	{
-		if (isRunningLeft)
-			player.DrawRunLeft();
-		else
-			player.DrawRunRight();
-	}
-	else if (player.direction.y < 0)
-	{
-		if (isRunningLeft)
-			player.DrawRunLeft();
-		else
-			player.DrawRunRight();
-	}
-	else
-		if (isRunningLeft)
-			player.DrawIdleLeft();
-		else
-			player.DrawIdleRight();
-
-
-	player.direction = { 0,0 };
 	EndDrawing();
 
 }
