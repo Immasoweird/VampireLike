@@ -154,13 +154,6 @@ void UpdateGame() {
 	}
 }
 
-//
-//void Purchase(int index) {
-//	coins -= upgradeButton.cost;
-//	gameStats[index].lvl++;
-//
-//}
-//
 
 void UpdateShop() {
 	gamestate.fullscreen();
@@ -191,4 +184,4 @@ void UpdateMenu() {
 		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
 			button.checkClick(mousePosition);
 	}
-}
+} 

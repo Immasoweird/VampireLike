@@ -89,20 +89,23 @@ void InitEnemies(int enemiesNumber) {
 
 void InitShop() {
 	Button button = {
-		"Item1",
+		"Damage upgrade",
 		{100,SCREEN_HEIGHT/3,200,50}
 	};
 	button.onClick = []() {
+		//if (coins >= cost)
+		weapon.attackDamage += 1000;
 		std::cout << "Bought!" << std::endl;
 	};
 	buttons.push_back(button);
 
 	Button button1 = {
-		"Item2",
+		"Health upgrade",
 		{400,SCREEN_HEIGHT / 3,200,50}
 
 	};
 	button1.onClick = []() {
+		player.health += 25;
 		std::cout << "Bought!" << std::endl;
 		};
 	buttons.push_back(button1);
