@@ -38,14 +38,28 @@ struct Button {
 	}
 };
 
+enum StatType
+{
+	Health,Attack, HealthRegen
+};
 
 struct Stat {
-	std::string name;
-	int lvl;
-	int price;
+	StatType name;
 	int value;
+	int valueStep;
+	int cost;
+	int costStep;
 
-	std::function<int(int)> lvlup=nullptr;
+	bool Upgrade(int money) {
+		if (money >= cost) {
+			value += valueStep;
+			cost += costStep;
+			return true;
+		}
+		else return false;
+	}
+
+	Stat(StatType name, int value, int valueStep, int cost, int costStep) :name(name), value(value) {};
 };
 
 
@@ -134,37 +148,16 @@ class Player {
 private:
 	void DrawAuraCirlce();
 public:
+
+	std::vector<Stat> Stats;
+
 	Vector2 position;
 	Circle damageAura;
 	Vector2 size;
 	Vector2 direction;
 	float speed;
 
-	int lvl;
-	int luck;
-	int reroll;
-	float evasion;
-	float lifesteal;
-	float collectArea;
-
-	int damage;
-	int attackRange;
-	int attackSpeed;
-	float attackAngle;
-	float critDamage;
-	float critChance;
-	float cooldownTimer;
 	int FrameCounter;
-
-	int health;
-	float hpRegen;
-	int armor;
-
-	bool isDashing;
-	float dashDuration;
-	float dashSpeed;
-	float dashCooldown;
-	float dashTimer;
 
 	Texture2D texture;
 	Texture2D idleTextureRight;

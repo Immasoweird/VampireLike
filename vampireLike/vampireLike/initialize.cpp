@@ -11,31 +11,36 @@ Player::Player() {
 	this->damageAura = { {position.x + 50, position.y + 50},200,{position.x + 50, position.y + 50},RED };
 	this->size = { 100,100 };
 	this->speed = 700;
-	this->attackRange = 200;
-	this->attackAngle = PI / 6;
-	this->health = 100;
-	this->hpRegen = 0.5;
-	this->armor = 10;
-	this->direction = { 0,0 };
+	Stat health = Stat(StatType::Health, 25, 10, 15, 5);
+	this->Stats.push_back(health);
+	Stat hpRegen = Stat(StatType::HealthRegen, 25, 10, 15, 5);
+	this->Stats.push_back(hpRegen);
 
-	this->luck = 0;
-	this->reroll = 0;
-	this->evasion = 0; // percent 
-	this->lifesteal = 1; // percent 
-	this->collectArea = 0; // percent 
+	//this->attackRange = 200;
+	//this->attackAngle = PI / 6;
+	//this->health = 100;
+	//this->hpRegen = 0.5;
+	//this->armor = 10;
+	//this->direction = { 0,0 };
 
-	this->damage = 1;
-	this->critDamage = 50; // percent 
-	this->critChance = 5; // percent 
-	this->attackSpeed = 1;
+	//this->luck = 0;
+	//this->reroll = 0;
+	//this->evasion = 0; // percent 
+	//this->lifesteal = 1; // percent 
+	//this->collectArea = 0; // percent 
 
-	//dash
-	this->isDashing = false; // Отслеживание состояния рывка
-	this->dashDuration = 0.15f;
-	this->dashSpeed = 1500.0f;
-	this->dashCooldown = 0.8f;
-	this->cooldownTimer = 0.0f; // Таймер для отслеживания времени восстановления
-	this->dashTimer = 0.0f;
+	//this->damage = 1;
+	//this->critDamage = 50; // percent 
+	//this->critChance = 5; // percent 
+	//this->attackSpeed = 1;
+
+	////dash
+	//this->isDashing = false; // Отслеживание состояния рывка
+	//this->dashDuration = 0.15f;
+	//this->dashSpeed = 1500.0f;
+	//this->dashCooldown = 0.8f;
+	//this->cooldownTimer = 0.0f; // Таймер для отслеживания времени восстановления
+	//this->dashTimer = 0.0f;
 
 	this->idleTextureLeft = {};
 	this->idleTextureRight = {};
@@ -90,13 +95,13 @@ void InitEnemies(int enemiesNumber) {
 void InitShop() {
 	Button button = {
 		"Damage upgrade",
-		{100,SCREEN_HEIGHT/3,200,50}
+		{100,SCREEN_HEIGHT / 3,200,50}
 	};
 	button.onClick = []() {
 		//if (coins >= cost)
 		weapon.attackDamage += 1000;
 		std::cout << "Bought!" << std::endl;
-	};
+		};
 	buttons.push_back(button);
 
 	Button button1 = {
@@ -105,7 +110,13 @@ void InitShop() {
 
 	};
 	button1.onClick = []() {
-		player.health += 25;
+		for (auto& stat : player.Stats) {
+			if (stat.name == StatType::Health) {
+				if (stat.Upgrade(coins)) {
+					coins = stat.cost;
+				}
+			}
+		}
 		std::cout << "Bought!" << std::endl;
 		};
 	buttons.push_back(button1);
@@ -122,7 +133,7 @@ void InitShop() {
 
 	Button button3 = {
 	"Go on",
-	{SCREEN_WIDTH/2-100,SCREEN_HEIGHT - 100,200,50}
+	{SCREEN_WIDTH / 2 - 100,SCREEN_HEIGHT - 100,200,50}
 	};
 	button3.onClick = []() {
 		currentScreen = 2;
@@ -133,7 +144,7 @@ void InitShop() {
 void InitMenu() {
 	Button start = {
 		"Start",
-		{SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2-150,200,50}
+		{SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 - 150,200,50}
 	};
 	start.onClick = []() {
 		std::cout << "Button clicked!" << std::endl;
@@ -145,7 +156,7 @@ void InitMenu() {
 
 	Button exit = {
 		"Exit",
-		{SCREEN_WIDTH/2-100,SCREEN_HEIGHT/2+150,200,50}
+		{SCREEN_WIDTH / 2 - 100,SCREEN_HEIGHT / 2 + 150,200,50}
 	};
 	exit.onClick = []() {
 		std::cout << "Button clicked!" << std::endl;
@@ -170,17 +181,7 @@ void InitGame() {
 	shootSpeed = 1200.0f;
 	waveCount = 1;
 	gamestate.score = 0;
-	player.lvl = 0;
-
-
-	Stat atackStat = { "damage",
-	1,
-	10,
-	111,
-
-	[](int lvl) {return 1 * lvl;} };
-
-	gameStats.push_back(atackStat);
+	//player.lvl = 0;
 
 	shoot.resize(MAX_SHOOTS);
 	for (int i = 0; i < MAX_SHOOTS; i++) {
@@ -228,7 +229,7 @@ void LoadTextures() {
 	ImageResize(&image2, image2.width * 3, image2.height * 3);
 	playerIdleTextureRight = LoadTextureFromImage(image2);
 	player.idleTextureRight = playerIdleTextureRight;
-	
+
 	image2 = LoadImage("assets\\_IdleLeft.png");
 	ImageResize(&image2, image2.width * 3, image2.height * 3);
 	playerIdleTextureLeft = LoadTextureFromImage(image2);
