@@ -32,9 +32,8 @@ Player::Player() {
 	this->isDashing = false; // Отслеживание состояния рывка
 	this->dashDuration = 0.15f;
 	this->dashSpeed = 1500.0f;
-	this->dashCooldown = 0.8f;
+	this->dashCooldown = 3.8f;
 	this->cooldownTimer = 0.0f; // Таймер для отслеживания времени восстановления
-	this->dashTimer = 0.0f;
 
 	this->idleTextureLeft = {};
 	this->idleTextureRight = {};

@@ -3,33 +3,34 @@
 #include "raymath.h"
 
 void Player::DrawAuraCirlce() {
-	DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
+	//DrawCircleV(damageAura.center, damageAura.radius, damageAura.color);
 }
+
 
 void Player::DrawIdleRight() {
 	DrawAuraCirlce();
-	DrawRectangleV(position, size, GOLD);
+	//DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
 	DrawTextureRec(idleTextureRight, { ((float)idleTextureRight.width / 10) * (FrameCounter % 10), 0, (float)idleTextureRight.width / 10, (float)idleTextureRight.height }, { position.x - 115, position.y - 140 }, RAYWHITE);
 }
 
 void Player::DrawIdleLeft() {
 	DrawAuraCirlce();
-	DrawRectangleV(position, size, GOLD);
+	//DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
 	DrawTextureRec(idleTextureLeft, { ((float)idleTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)idleTextureLeft.width / 10, (float)idleTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
 
 void Player::DrawRunRight() {
 	DrawAuraCirlce();
-	DrawRectangleV(position, size, GOLD);
+	//DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
 	DrawTextureRec(runTextureRight, { ((float)runTextureRight.width / 10) * (FrameCounter % 10), 0, (float)runTextureRight.width / 10, (float)runTextureRight.height }, { position.x - 115, position.y - 140 }, RAYWHITE);
 }
 
 void Player::DrawRunLeft() {
 	DrawAuraCirlce();
-	DrawRectangleV(position, size, GOLD);
+	//DrawRectangleV(position, size, GOLD);
 	//DrawTexture(texture, position.x, position.y, RAYWHITE);
 	DrawTextureRec(runTextureLeft, { ((float)runTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)runTextureLeft.width / 10, (float)runTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
@@ -115,7 +116,13 @@ void DrawGame() {
 			if (shoot[i].explosion.active) {
 				DrawCircleV(shoot[i].explosion.body.center, shoot[i].explosion.body.radius, shoot[i].explosion.body.color);
 			}
-		}
+		};
+		HUD healthBar = HUD(100, 110, 125, GREEN, false);
+		healthBar.SetValue(player.health);
+		healthBar.DrawHUD(Vector2Add(player.position, Vector2Scale(player.size, 0.5)));
+		HUD dashBar = HUD(player.dashCooldown,80, 95, GOLD, false);
+		dashBar.SetValue(player.dashCooldown - player.cooldownTimer);
+		dashBar.DrawHUD(Vector2Add(player.position, Vector2Scale(player.size, 0.5)));
 
 	}
 	EndMode2D();

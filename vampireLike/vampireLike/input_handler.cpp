@@ -52,6 +52,9 @@ void Player::Update() {
 	if (cooldownTimer > 0) {
 		cooldownTimer -= deltaTime; // Уменьшение таймера восстановления
 	}
+	else {
+		cooldownTimer = 0;
+	}
 
 
 	Rectangle playerRect = { position.x, position.y, size.x, size.y };

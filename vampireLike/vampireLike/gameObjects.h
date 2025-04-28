@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include <functional>
-// Êîíñòàíòû
+
 constexpr int SCREEN_WIDTH = 1600;
 constexpr int SCREEN_HEIGHT = 900;
 
@@ -33,8 +33,6 @@ struct Stat {
 	std::function<int(int)> lvlup;
 };
 
-
-// Îñíîâíûå ñòðóêòóðû
 struct Circle {
 	Vector2 position;
 	float radius;
@@ -57,7 +55,7 @@ struct TextureInfo {
 	Vector2 position;
 };
 
-// Êëàññ Gamestate
+// class Gamestate
 class Gamestate {
 public:
 	Camera2D camera;
@@ -67,6 +65,51 @@ public:
 	void fullscreen();
 };
 
+struct HUD
+{
+private:
+
+	float innerRadius = 80.0f;
+	float outerRadius = 120.0f;
+
+
+	float startAngle = 50.0f;
+	const float endAngle = 120.0f;
+	const float segments = 200.0f;
+
+
+	float max_value;
+	float current_value;
+	Color bar_color;
+	bool show_text;
+
+public:
+
+	void DrawHUD(Vector2 position) {
+		DrawRing(position, innerRadius-2.5f, outerRadius+2.5f, 47.5f, endAngle+2.5f, (int)segments, BLACK);
+		DrawRing(position, innerRadius, outerRadius, startAngle, endAngle, (int)segments, bar_color);
+	}
+	bool SetValue(float value) {
+		if (value < 0 || value > max_value) {
+			return false;
+		}
+		float percentage = value / max_value;
+		startAngle = endAngle - value / max_value * 70 ;
+	}
+	HUD() {};
+
+	HUD(float max_value,int innerRadius, int outerRadius, Color bar_color, bool show_text) :
+
+		max_value(max_value),
+		innerRadius(innerRadius),
+		outerRadius(outerRadius),
+		bar_color(bar_color),
+		show_text(show_text)
+	{
+	};
+
+};
+
 //classes
 class Shape {
 
@@ -74,37 +117,37 @@ class Shape {
 
 
 struct Weapon {
-    int allWeapons = 4;
-    int selectWeapon = 1;
-    int attackRange = 200;
-    float cooldown = 0.0f;
-    int attackSpeed = 1;
-    int attackDamage = 111;
-    float weaponExp = 0.0f;
-    int weaponLevel = 1;
-    float critDamage = 50; // percent 
-    float critChance = 5; // percent 
+	int allWeapons = 4;
+	int selectWeapon = 1;
+	int attackRange = 200;
+	float cooldown = 0.0f;
+	int attackSpeed = 1;
+	int attackDamage = 111;
+	float weaponExp = 0.0f;
+	int weaponLevel = 1;
+	float critDamage = 50; // percent 
+	float critChance = 5; // percent 
 
-    void Attack(Shape x, Shape y) {
-        printf("weapon attack");
-    };
+	void Attack(Shape x, Shape y) {
+		printf("weapon attack");
+	};
 };
 
 struct Explosion {
-    Circle body;
-    bool active = false;
-    float damage;
+	Circle body;
+	bool active = false;
+	float damage;
 };
 struct Shoot {
-    Vector2 position;
-    Vector2 speed;
-    float radius;
-    bool active;
-    Color color;
-    Explosion explosion;
+	Vector2 position;
+	Vector2 speed;
+	float radius;
+	bool active;
+	Color color;
+	Explosion explosion;
 };
 
-// Êëàññ WeaponList
+// class WeaponList
 class WeaponList {
 public:
 	std::map<std::string, int> weapon = {
@@ -114,7 +157,7 @@ public:
 	};
 };
 
-// Êëàññ Player
+// class Player
 class Player {
 private:
 	void DrawAuraCirlce();
@@ -167,13 +210,13 @@ public:
 };
 
 struct Enemy {
-    Rectangle body;
-    Vector2 speed;
-    Vector2 position;
-    Color color;
-    bool active;
-    float health;
-    float damage;
+	Rectangle body;
+	Vector2 speed;
+	Vector2 position;
+	Color color;
+	bool active;
+	float health;
+	float damage;
 
 	Texture2D texture;
 
