@@ -15,6 +15,11 @@ void weaponHandler() {
 	}
 
 	if (weapon.selectWeapon == 1) { //sword
+		for (auto& stat : player.Stats) {
+			if (stat.name == StatType::AttackAngle) {
+				stat.value
+			}
+		}
 		player.attackAngle = PI / 6;
 		weapon.attackRange = 200;
 		player.damageAura.radius = 200;

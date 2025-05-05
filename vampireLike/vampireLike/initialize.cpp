@@ -15,6 +15,7 @@ Player::Player() {
 	this->Stats.push_back(health);
 	Stat hpRegen = Stat(StatType::HealthRegen, 25, 10, 15, 5);
 	this->Stats.push_back(hpRegen);
+	Stat armor = Stat(StatType::Armor, 10, 2, 15, 5)
 
 	//this->attackRange = 200;
 	//this->attackAngle = PI / 6;

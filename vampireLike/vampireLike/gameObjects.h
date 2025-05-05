@@ -40,7 +40,7 @@ struct Button {
 
 enum StatType
 {
-	Health,Attack, HealthRegen
+	Health,Attack, HealthRegen, AttackAngle, Armor,
 };
 
 struct Stat {
