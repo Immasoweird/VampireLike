@@ -35,12 +35,18 @@ void Player::DrawRunLeft() {
 	DrawTextureRec(runTextureLeft, { ((float)runTextureLeft.width / 10) * (FrameCounter % 10), 0, (float)runTextureLeft.width / 10, (float)runTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
 
-
-void Enemy::Draw()
+void Enemy::DrawWalkRight()
 {
-	DrawRectangleRec(body, color);
-	DrawTexture(texture, position.x, position.y, RAYWHITE);
+	//DrawRectangleRec(body, color);
+	DrawTextureRec(enemyWalkTextureRight, { ((float)enemyWalkTextureRight.width / 6) * (FrameCounter % 6), 0, (float)enemyWalkTextureRight.width / 6, (float)enemyWalkTextureRight.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
 }
+
+void Enemy::DrawWalkLeft()
+{
+	//DrawRectangleRec(body, color);
+	DrawTextureRec(enemyWalkTextureLeft, { ((float)enemyWalkTextureLeft.width / 6) * (FrameCounter % 6), 0, (float)enemyWalkTextureLeft.width / 6, (float)enemyWalkTextureLeft.height }, { position.x - 140, position.y - 140 }, RAYWHITE);
+}
+
 
 void DrawGame() {
 	BeginDrawing();
@@ -96,7 +102,35 @@ void DrawGame() {
 		for (int i = 0; i < enemies.size(); i++)
 		{
 			if (enemies[i].active) {
-				enemies[i].Draw();
+				if (enemies[i].direction.x > 0)
+				{
+					enemies[i].isWalkningLeft = false;
+					enemies[i].DrawWalkRight();
+				}
+				else if (enemies[i].direction.x < 0)
+				{
+					enemies[i].isWalkningLeft = true;
+					enemies[i].DrawWalkLeft();
+				}
+				else if (enemies[i].direction.y > 0)
+				{
+					if (enemies[i].isWalkningLeft)
+						enemies[i].DrawWalkLeft();
+					else
+						enemies[i].DrawWalkRight();
+				}
+				else if (enemies[i].direction.y < 0)
+				{
+					if (enemies[i].isWalkningLeft)
+						enemies[i].DrawWalkLeft();
+					else
+						enemies[i].DrawWalkRight();
+				}
+				else
+				{
+						enemies[i].DrawWalkLeft();
+
+				};
 
 			}
 		}
