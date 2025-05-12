@@ -213,13 +213,21 @@ struct Enemy {
 	Rectangle body;
 	Vector2 speed;
 	Vector2 position;
+	Vector2 direction;
 	Color color;
 	bool active;
+	bool isWalkningLeft=false;
 	float health;
 	float damage;
+	int FrameCounter;
 
 	Texture2D texture;
+	Texture2D enemyWalkTextureRight;
+	Texture2D enemyWalkTextureLeft;
 
 	void Draw();
+	void DrawWalkRight();
+	void DrawWalkLeft();
+
 
 };

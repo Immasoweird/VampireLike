@@ -3,6 +3,7 @@
 
 extern Gamestate gamestate;
 extern Player player;
+extern Enemy enemy;
 extern Weapon weapon;
 extern std::vector<Shoot> shoot;
 extern std::vector<Enemy> enemies;
@@ -19,6 +20,8 @@ extern int GlobalFrameCounter;
 extern bool spritesLoaded;
 extern bool isRunningLeft;
 extern Texture2D enemyTexture;
+extern Texture2D enemyWalkTextureRight;
+extern Texture2D enemyWalkTextureLeft;
 extern Texture2D playerTexture;
 extern Texture2D playerRunTextureRight;
 extern Texture2D playerRunTextureLeft;

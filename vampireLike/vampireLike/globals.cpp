@@ -2,9 +2,9 @@
 
 Gamestate gamestate;
 Player player;
+Enemy enemy;
 Weapon weapon;
 std::vector<Shoot> shoot;
-Enemy enemy;
 std::vector<Enemy> enemies;
 TextureInfo background;
 Triangle attack_triangle;
@@ -19,6 +19,8 @@ int GlobalFrameCounter;
 bool spritesLoaded = false;
 bool isRunningLeft;
 Texture2D enemyTexture;
+Texture2D enemyWalkTextureRight;
+Texture2D enemyWalkTextureLeft;
 Texture2D playerTexture;
 Texture2D playerRunTextureRight;
 Texture2D playerRunTextureLeft;

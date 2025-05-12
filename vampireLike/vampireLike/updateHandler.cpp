@@ -86,6 +86,10 @@ void UpdateGame() {
 	bool anyAlive = false;
 	for (int i = 0; i < enemies.size(); i++) {
 		auto& enemy = enemies[i];
+		if (GlobalFrameCounter % 30 == 0)
+		{
+			enemy.FrameCounter++;
+		}
 		if (enemy.health <= 0) {
 			if (enemies[i].active) {
 				gamestate.score++;
@@ -127,6 +131,7 @@ void UpdateGame() {
 		auto playerPosition = player.position;
 		Vector2 direction = Vector2Normalize(Vector2Subtract(playerPosition, enemies[i].position));
 		Vector2 move = { enemies[i].speed.x * direction.x,enemies[i].speed.y * direction.y };
+		enemies[i].direction = move;
 		enemies[i].position = Vector2Add(enemies[i].position, move);
 		enemies[i].body.x = enemies[i].position.x;
 		enemies[i].body.y = enemies[i].position.y;
