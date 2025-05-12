@@ -15,12 +15,7 @@ void weaponHandler() {
 	}
 
 	if (weapon.selectWeapon == 1) { //sword
-		for (auto& stat : player.Stats) {
-			if (stat.name == StatType::AttackAngle) {
-				stat.value
-			}
-		}
-		player.attackAngle = PI / 6;
+		player.Stats[StatType::AttackAngle].value = PI / 6;
 		weapon.attackRange = 200;
 		player.damageAura.radius = 200;
 		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -31,7 +26,7 @@ void weaponHandler() {
 			mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
 			Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
 			Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
-			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
+			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.Stats[StatType::AttackAngle].value) * weapon.attackRange);
 			Vector2 edge = Vector2Add(player_pos, range);
 			Vector2 left = Vector2Add(edge, tangent);
 			Vector2 NTangent = Vector2Rotate(tangent, PI);
@@ -51,7 +46,7 @@ void weaponHandler() {
 		}
 	}
 	else if (weapon.selectWeapon == 2) { //spear
-		player.attackAngle = PI / 40;
+		player.Stats[StatType::AttackAngle].value = PI / 40;
 		weapon.attackRange = 500;
 		player.damageAura.radius = 500;
 
@@ -63,7 +58,7 @@ void weaponHandler() {
 			mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
 			Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
 			Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
-			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
+			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.Stats[StatType::AttackAngle].value) * weapon.attackRange);
 			Vector2 edge = Vector2Add(player_pos, range);
 			Vector2 left = Vector2Add(edge, tangent);
 			Vector2 NTangent = Vector2Rotate(tangent, PI);

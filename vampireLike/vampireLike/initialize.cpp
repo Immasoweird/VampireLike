@@ -11,11 +11,24 @@ Player::Player() {
 	this->damageAura = { {position.x + 50, position.y + 50},200,{position.x + 50, position.y + 50},RED };
 	this->size = { 100,100 };
 	this->speed = 700;
-	Stat health = Stat(StatType::Health, 25, 10, 15, 5);
-	this->Stats.push_back(health);
-	Stat hpRegen = Stat(StatType::HealthRegen, 25, 10, 15, 5);
-	this->Stats.push_back(hpRegen);
-	Stat armor = Stat(StatType::Armor, 10, 2, 15, 5)
+	    // Основные статы
+    this->Stats[StatType::Health] = (Stat(StatType::Health, 100, 0, 100, 0));         // this->health
+    this->Stats[StatType::HealthRegen] = (Stat(StatType::HealthRegen, 0.5f, 0, 5, 0.1f));   // this->hpRegen
+    this->Stats[StatType::Armor] = (Stat(StatType::Armor, 10, 0, 50, 2));             // this->armor
+    this->Stats[StatType::Evasion] = (Stat(StatType::Evasion, 0, 0, 30, 1));            // this->evasion (%)
+    this->Stats[StatType::Lifesteal] = (Stat(StatType::Lifesteal, 1, 0, 10, 0.5f));       // this->lifesteal (%)
+    this->Stats[StatType::Luck] = (Stat(StatType::Luck, 0, 0, 100, 1));              // this->luck
+    this->Stats[StatType::Reroll] = (Stat(StatType::Reroll, 0, 0, 10, 1));             // this->reroll
+    this->Stats[StatType::CollectArea] = (Stat(StatType::CollectArea, 0, 0, 100, 5));       // this->collectArea (%)
+
+    // Атака
+    this->Stats[StatType::Damage] = (Stat(StatType::Damage, 1, 0, 10, 0.5f));          // this->damage
+    this->Stats[StatType::CritChance] = (Stat(StatType::CritChance, 5, 0, 50, 1));         // this->critChance (%)
+    this->Stats[StatType::CritDamage] = (Stat(StatType::CritDamage, 50, 0, 100, 5));       // this->critDamage (%)
+    this->Stats[StatType::AttackSpeed] = (Stat(StatType::AttackSpeed, 1.0f, 0.5f, 3, 0.1f));// this->attackSpeed (attacks per second)
+    this->Stats[StatType::AttackRange] = (Stat(StatType::AttackRange, 200, 100, 400, 10));  // this->attackRange
+    this->Stats[StatType::AttackAngle] = (Stat(StatType::AttackAngle, PI / 6, 0, PI / 2, PI / 12)); // угол атаки
+
 
 	//this->attackRange = 200;
 	//this->attackAngle = PI / 6;
@@ -111,13 +124,10 @@ void InitShop() {
 
 	};
 	button1.onClick = []() {
-		for (auto& stat : player.Stats) {
-			if (stat.name == StatType::Health) {
-				if (stat.Upgrade(coins)) {
-					coins = stat.cost;
-				}
-			}
+		if (player.Stats[StatType::Health].Upgrade(coins)) {
+			coins = player.Stats[StatType::Health].cost;
 		}
+		
 		std::cout << "Bought!" << std::endl;
 		};
 	buttons.push_back(button1);

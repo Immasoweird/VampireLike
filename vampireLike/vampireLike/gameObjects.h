@@ -39,10 +39,9 @@ struct Button {
 };
 
 enum StatType
-{
-	Health,Attack, HealthRegen, AttackAngle, Armor,
+{																						  
+	Health,Attack, HealthRegen, AttackAngle, Armor, MaxHealth, Evasion, Lifesteal, Luck, Reroll, CollectArea, Damage, AttackSpeed, CritChance, CritDamage, AttackRange, DashSpeed, DashDuration, DashCooldown
 };
-
 struct Stat {
 	StatType name;
 	int value;
@@ -149,7 +148,7 @@ private:
 	void DrawAuraCirlce();
 public:
 
-	std::vector<Stat> Stats;
+	std::map<StatType, Stat> Stats;
 
 	Vector2 position;
 	Circle damageAura;
