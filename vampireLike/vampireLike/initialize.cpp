@@ -149,8 +149,8 @@ void InitMenu() {
 	};
 	exit.onClick = []() {
 		std::cout << "Button clicked!" << std::endl;
-		CloseWindow();
-		};
+		std::exit(0);
+ 		};
 	buttons.push_back(exit);
 }
 
@@ -176,7 +176,7 @@ void InitGame() {
 	Stat atackStat = { "damage",
 	1,
 	10,
-	111,
+	10,
 
 	[](int lvl) {return 1 * lvl;} };
 
