@@ -76,7 +76,7 @@ void InitEnemies(int enemiesNumber) {
 				body,
 				speed,
 				position,
-			{0,0},
+				{0,0},
 				color,
 				active,
 				false,
@@ -84,6 +84,8 @@ void InitEnemies(int enemiesNumber) {
 				damage,
 
 		};
+		current.enemyWalkTextureRight = enemyTextureRight;
+		current.enemyWalkTextureLeft = enemyTextureLeft;
 		enemies.push_back(current);
 	}
 }
@@ -202,12 +204,12 @@ void InitGame() {
 			damage,
 		};
 	}
-
 	InitEnemies(10);
 	if (!spritesLoaded) {
 		LoadTextures();
 		spritesLoaded = true;
 	}
+
 }
 
 void LoadTextures() {
@@ -240,18 +242,18 @@ void LoadTextures() {
 
 	Image image3 = LoadImage("assets\\SkeletonWalkRight.png");
 	ImageResize(&image3, image3.width * 3, image3.height * 3);
-	enemyTexture = LoadTextureFromImage(image3);
+	enemyTextureRight = LoadTextureFromImage(image3);
 	for (int i = 0; i < MAX_ENEMIES; i++) {
-		enemies[i].enemyWalkTextureRight = enemyTexture;
+		enemies[i].enemyWalkTextureRight = enemyTextureRight;
 	}
 	UnloadImage(image3);
 
 	image3 = LoadImage("assets\\SkeletonWalkLeft.png");
 	ImageResize(&image3, image3.width * 3, image3.height * 3);
 	ImageFlipHorizontal(&image3);
-	enemyTexture = LoadTextureFromImage(image3);
+	enemyTextureLeft = LoadTextureFromImage(image3);
 	for (int i = 0; i < MAX_ENEMIES; i++) {
-		enemies[i].enemyWalkTextureLeft = enemyTexture;
+		enemies[i].enemyWalkTextureLeft = enemyTextureLeft;
 	}
 	UnloadImage(image3);
 
