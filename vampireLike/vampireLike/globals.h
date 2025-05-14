@@ -28,4 +28,4 @@ extern Texture2D playerRunTextureLeft;
 extern Texture2D playerIdleTextureRight;
 extern Texture2D playerIdleTextureLeft;
 extern std::vector<Stat> gameStats;
-extern Button upgradeButton;
+extern std::vector<Button> buttons;

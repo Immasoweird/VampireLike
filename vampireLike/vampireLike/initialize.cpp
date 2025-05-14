@@ -2,6 +2,7 @@
 #include "globals.h"
 #include <raymath.h>
 #include "gameObjects.h"
+#include <iostream>
 
 
 
@@ -86,6 +87,75 @@ void InitEnemies(int enemiesNumber) {
 		enemies.push_back(current);
 	}
 }
+
+void InitShop() {
+	Button button = {
+		"Damage upgrade",
+		{100,SCREEN_HEIGHT/3,200,50}
+	};
+	button.onClick = []() {
+		//if (coins >= cost)
+		weapon.attackDamage += 1000;
+		std::cout << "Bought!" << std::endl;
+	};
+	buttons.push_back(button);
+
+	Button button1 = {
+		"Health upgrade",
+		{400,SCREEN_HEIGHT / 3,200,50}
+
+	};
+	button1.onClick = []() {
+		player.health += 25;
+		std::cout << "Bought!" << std::endl;
+		};
+	buttons.push_back(button1);
+
+	Button button2 = {
+		"Item3",
+		{700,SCREEN_HEIGHT / 3,200,50}
+	};
+	button2.onClick = []() {
+		std::cout << "Bought!" << std::endl;
+		};
+	buttons.push_back(button2);
+
+
+	Button button3 = {
+	"Go on",
+	{SCREEN_WIDTH/2-100,SCREEN_HEIGHT - 100,200,50}
+	};
+	button3.onClick = []() {
+		currentScreen = 2;
+		};
+	buttons.push_back(button3);
+}
+
+void InitMenu() {
+	Button start = {
+		"Start",
+		{SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2-150,200,50}
+	};
+	start.onClick = []() {
+		std::cout << "Button clicked!" << std::endl;
+		currentScreen = 2;
+		buttons.clear();
+		InitGame();
+		};
+	buttons.push_back(start);
+
+	Button exit = {
+		"Exit",
+		{SCREEN_WIDTH/2-100,SCREEN_HEIGHT/2+150,200,50}
+	};
+	exit.onClick = []() {
+		std::cout << "Button clicked!" << std::endl;
+		std::exit(0);
+ 		};
+	buttons.push_back(exit);
+}
+
+
 void InitGame() {
 	gamestate.camera.target = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
 	gamestate.camera.offset = { SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f };
@@ -103,15 +173,11 @@ void InitGame() {
 	gamestate.score = 0;
 	player.lvl = 0;
 
-	upgradeButton = { "damage",
-10,
-"adawd",
-	};
 
 	Stat atackStat = { "damage",
 	1,
 	10,
-	111,
+	10,
 
 	[](int lvl) {return 1 * lvl; } };
 

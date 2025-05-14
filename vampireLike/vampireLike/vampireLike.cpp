@@ -11,23 +11,23 @@
 int main() {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Devil May Cry 9");
 	SetTargetFPS(165);
-	InitGame();
+	InitMenu();
+
 	
 	while (!WindowShouldClose()) {
-		if (IsKeyPressed(KEY_RIGHT_BRACKET)) currentScreen++;
-		
-		else if (IsKeyPressed(KEY_LEFT_BRACKET)) currentScreen--;
 
 		switch (currentScreen) {
 		case 0:
-			UpdateGame();
-			DrawGame();
+			UpdateMenu();
+			DrawMenu();
 			break;
 		case 1:
 			UpdateShop();
 			DrawShop();
 			break;
 		case 2:
+			UpdateGame();
+			DrawGame();
 			break;
 		default:
 			break;

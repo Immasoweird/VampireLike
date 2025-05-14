@@ -163,43 +163,23 @@ void DrawGame() {
 	EndDrawing();
 }
 
+void DrawMenu() {
+	BeginDrawing();
+	ClearBackground(GRAY);
 
+	for (auto& button : buttons) {
+		button.Draw();
+	}
+	EndDrawing();
+}
 
 void DrawShop() {
 	BeginDrawing();
 	ClearBackground(GREEN);
-	if (player.direction.x > 0)
-	{
-		isRunningLeft = false;
-		player.DrawRunRight();
+	
+	for (auto& button : buttons) {
+		button.Draw();
 	}
-	else if (player.direction.x < 0)
-	{
-		isRunningLeft = true;
-		player.DrawRunLeft();
-	}
-	else if (player.direction.y > 0)
-	{
-		if (isRunningLeft)
-			player.DrawRunLeft();
-		else
-			player.DrawRunRight();
-	}
-	else if (player.direction.y < 0)
-	{
-		if (isRunningLeft)
-			player.DrawRunLeft();
-		else
-			player.DrawRunRight();
-	}
-	else
-		if (isRunningLeft)
-			player.DrawIdleLeft();
-		else
-			player.DrawIdleRight();
-
-
-	player.direction = { 0,0 };
 	EndDrawing();
 
 }

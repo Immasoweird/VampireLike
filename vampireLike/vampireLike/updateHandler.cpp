@@ -101,6 +101,8 @@ void UpdateGame() {
 		}
 	}
 	if (!anyAlive) {
+		InitShop();
+		currentScreen = 1;
 		printf("Wave: %d \n", ++waveCount);
 		InitEnemies(waveCount * 2 + 10);
 	}
@@ -158,13 +160,6 @@ void UpdateGame() {
 }
 
 
-void Purchase(int index) {
-	coins -= upgradeButton.cost;
-	gameStats[index].lvl++;
-
-}
-
-
 void UpdateShop() {
 	gamestate.fullscreen();
 
@@ -180,7 +175,18 @@ void UpdateShop() {
 	if (gamestate.gameOver) return;
 
 
-	player.Update();
+	
 	Vector2 mousePosition = GetMousePosition();
-
+	for (auto& button : buttons) {
+		if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))	
+			button.checkClick(mousePosition);
+	}
 }
+
+void UpdateMenu() {
+	Vector2 mousePosition = GetMousePosition();
+	for (auto& button : buttons) {
+		if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+			button.checkClick(mousePosition);
+	}
+} 

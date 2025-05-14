@@ -3,3 +3,4 @@
 
 void DrawGame();
 void DrawShop();
+void DrawMenu();
