@@ -173,15 +173,7 @@ void InitGame() {
 	gamestate.score = 0;
 	player.lvl = 0;
 
-
-	Stat atackStat = { "damage",
-	1,
-	10,
-	10,
-
-	[](int lvl) {return 1 * lvl; } };
-
-	gameStats.push_back(atackStat);
+	weapon.attackDamage = 100;
 
 	shoot.resize(MAX_SHOOTS);
 	for (int i = 0; i < MAX_SHOOTS; i++) {
