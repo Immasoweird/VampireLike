@@ -202,6 +202,7 @@ void InitGame() {
 			body,
 			active,
 			damage,
+			EXPLOSION_COUNTDOWN,
 		};
 	}
 	InitEnemies(10);

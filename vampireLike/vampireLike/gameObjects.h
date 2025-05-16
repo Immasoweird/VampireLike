@@ -8,9 +8,11 @@
 constexpr int SCREEN_WIDTH = 1600;
 constexpr int SCREEN_HEIGHT = 900;
 
-constexpr float SWORD_ATTACK_COOLDOWN = 100.0f; // Êóëäàóí äëÿ àòàêè êîïü¸ì
-constexpr float SPEAR_ATTACK_COOLDOWN = 1.0f; // Êóëäàóí äëÿ àòàêè êîïü¸ì
-constexpr float BOW_ATTACK_COOLDOWN = 1.0f; // Êóëäàóí äëÿ àòàêè êîïü¸ì
+constexpr float SWORD_ATTACK_COOLDOWN = 0.25f; 
+constexpr float SPEAR_ATTACK_COOLDOWN = 1.5f; 
+constexpr float BOW_ATTACK_COOLDOWN = 0.75f; 
+constexpr float FIREBALL_ATTACK_COOLDOWN = 2.0f; 
+constexpr float EXPLOSION_COUNTDOWN = 0.1f; 
 
 constexpr int MAX_ENEMIES = 10;
 constexpr int MAX_SHOOTS = 200;
@@ -152,6 +154,7 @@ struct Explosion {
 	Circle body;
 	bool active = false;
 	float damage;
+	float countdown = EXPLOSION_COUNTDOWN;
 };
 struct Shoot {
 	Vector2 position;

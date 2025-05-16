@@ -18,7 +18,7 @@ void weaponHandler() {
 		player.attackAngle = PI / 6;
 		weapon.attackRange = 200;
 		player.damageAura.radius = 200;
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) and weapon.cooldown <= 0) {
 			Vector2 player_pos = Vector2Add({ player.position.x, player.position.y }, Vector2Scale(player.size, 0.5f));
 			Vector2 center = Vector2Add(player_pos, Vector2Scale(player.size, 0.5f));
 			center = { abs(center.x),abs(center.y) };
@@ -43,6 +43,8 @@ void weaponHandler() {
 					}
 				}
 			}
+
+			weapon.cooldown = SWORD_ATTACK_COOLDOWN;
 		}
 	}
 	else if (weapon.selectWeapon == 2) { //spear
@@ -80,7 +82,7 @@ void weaponHandler() {
 	}
 	else if (weapon.selectWeapon == 3) { // Bow
 		// Создание стрелы
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) and weapon.cooldown <= 0) {
 			Vector2 playerCenter = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
 			Vector2 mousePosition = GetMousePosition();
 			Vector2 mouseWorldPos = GetScreenToWorld2D(mousePosition, gamestate.camera);
@@ -97,10 +99,11 @@ void weaponHandler() {
 					break;
 				}
 			}
+			weapon.cooldown = BOW_ATTACK_COOLDOWN;
 		}
 	}
-	else if (weapon.selectWeapon == 4) { // fireball
-		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+	else if (weapon.selectWeapon == 4) { 
+		if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) and weapon.cooldown <= 0) {
 			Vector2 playerCenter = Vector2Add(player.position, Vector2Scale(player.size, 0.5f));
 			Vector2 mousePosition = GetMousePosition();
 			Vector2 mouseWorldPos = GetScreenToWorld2D(mousePosition, gamestate.camera);
@@ -110,13 +113,14 @@ void weaponHandler() {
 			for (int i = 0; i < MAX_SHOOTS; i++) {
 				if (!shoot[i].active) {
 					shoot[i].position = playerCenter;
-					shoot[i].speed = Vector2Scale(direction, 500.0f); // Уменьшенная скорость
+					shoot[i].speed = Vector2Scale(direction, 500.0f);
 					shoot[i].active = true;
-					shoot[i].radius = 20.0f; // Увеличенный радиус
-					shoot[i].color = BLACK; // Яркий цвет
+					shoot[i].radius = 20.0f;
+					shoot[i].color = BLACK;
 					break;
 				}
 			}
+			weapon.cooldown = FIREBALL_ATTACK_COOLDOWN;
 		}
 		for (int i = 0; i < MAX_SHOOTS; i++) {
 			if (shoot[i].active) {
@@ -125,21 +129,44 @@ void weaponHandler() {
 					Vector2Scale(shoot[i].speed, GetFrameTime())
 				);
 
-				// Проверка выхода за пределы экрана
 				Vector2 screenPos = GetWorldToScreen2D(shoot[i].position, gamestate.camera);
 				if (screenPos.x < 0 || screenPos.x > SCREEN_WIDTH ||
 					screenPos.y < 0 || screenPos.y > SCREEN_HEIGHT) {
 					shoot[i].active = false;
 				}
 
-				// Проверка столкновений
-				for (auto& enemy : enemies) {
-					if (enemy.active) {
-						if (CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, enemy.body)) {
+			}
+		}
+
+	}
+
+	for (int i = 0; i < MAX_SHOOTS; i++) {
+		if (shoot[i].explosion.active and shoot[i].explosion.countdown > 0.0f) {
+			shoot[i].explosion.countdown -= GetFrameTime();
+		}
+		if (shoot[i].explosion.active and shoot[i].explosion.countdown <= 0.0f) {
+			shoot[i].explosion.active = false;
+			shoot[i].explosion.countdown = 0.05f;
+		}
+		if (shoot[i].active) {	
+			shoot[i].position = Vector2Add(
+				shoot[i].position,
+				Vector2Scale(shoot[i].speed, GetFrameTime())
+			);
+			Vector2 screenPos = GetWorldToScreen2D(shoot[i].position, gamestate.camera);
+			if (screenPos.x < 0 || screenPos.x > SCREEN_WIDTH ||
+				screenPos.y < 0 || screenPos.y > SCREEN_HEIGHT) {
+				shoot[i].active = false;
+			}
+
+			for (auto& enemy : enemies) {
+				if (enemy.active) {
+					if (CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, enemy.body)) {
+						enemy.health -= weapon.attackDamage;
+						std::cout << enemy.health << "\n";
+						if (weapon.selectWeapon == 4) {
 							shoot[i].explosion.active = true;
 							shoot[i].explosion.body.center = shoot[i].position;
-							enemy.health -= weapon.attackDamage;
-							std::cout << enemy.health << "\n";
 							for (auto& enemy : enemies) {
 								if (enemy.active) {
 									if (CheckCollisionCircleRec(shoot[i].explosion.body.center, shoot[i].explosion.body.radius, enemy.body)) {
@@ -149,39 +176,8 @@ void weaponHandler() {
 									}
 								}
 							}
-							shoot[i].active = false;
-							break;
 						}
-					}
-				}
-
-
-			}
-		}
-	}
-
-	// Обновление стрел
-	for (int i = 0; i < MAX_SHOOTS; i++) {
-		if (shoot[i].active) {
-			shoot[i].position = Vector2Add(
-				shoot[i].position,
-				Vector2Scale(shoot[i].speed, GetFrameTime())
-			);
-			// Проверка выхода за пределы экрана
-			Vector2 screenPos = GetWorldToScreen2D(shoot[i].position, gamestate.camera);
-			if (screenPos.x < 0 || screenPos.x > SCREEN_WIDTH ||
-				screenPos.y < 0 || screenPos.y > SCREEN_HEIGHT) {
-				shoot[i].active = false;
-			}
-
-			// Проверка столкновений
-			for (auto& enemy : enemies) {
-				if (enemy.active) {
-					if (CheckCollisionCircleRec(shoot[i].position, shoot[i].radius, enemy.body)) {
-						enemy.health -= weapon.attackDamage;
-						std::cout << enemy.health << "\n";
 						shoot[i].active = false;
-						enemy.color = ORANGE; // Изменение цвета врага
 						break;
 					}
 				}

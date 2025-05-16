@@ -99,6 +99,23 @@ void DrawGame() {
 			DrawLineEx(attack_triangle.range, attack_triangle.NTangent, 10, GREEN);
 			DrawLineEx({ 0,0 }, attack_triangle.NTangent, 10, PURPLE);
 		}
+		for (int i = 0; i < MAX_SHOOTS; i++)
+		{
+			if (shoot[i].active) {
+				DrawCircleV(shoot[i].position, shoot[i].radius, shoot[i].color);
+				if (weapon.selectWeapon == 3) {
+					DrawLineEx(
+						shoot[i].position,
+						Vector2Add(shoot[i].position, Vector2Scale(shoot[i].speed, 0.05f)),
+						3.0f,
+						BLACK
+					);
+				}
+			}
+			if (shoot[i].explosion.active) {
+				DrawCircleV(shoot[i].explosion.body.center, shoot[i].explosion.body.radius, shoot[i].explosion.body.color);
+			}
+		};
 		for (int i = 0; i < enemies.size(); i++)
 		{
 			if (enemies[i].active) {
@@ -134,23 +151,7 @@ void DrawGame() {
 
 			}
 		}
-		for (int i = 0; i < MAX_SHOOTS; i++)
-		{
-			if (shoot[i].active) {
-				DrawCircleV(shoot[i].position, shoot[i].radius, shoot[i].color);
-				if (weapon.selectWeapon == 3) {
-					DrawLineEx(
-						shoot[i].position,
-						Vector2Add(shoot[i].position, Vector2Scale(shoot[i].speed, 0.05f)),
-						3.0f,
-						BLACK
-					);
-				}
-			}
-			if (shoot[i].explosion.active) {
-				DrawCircleV(shoot[i].explosion.body.center, shoot[i].explosion.body.radius, shoot[i].explosion.body.color);
-			}
-		};
+
 		HUD healthBar = HUD(100, 110, 125, GREEN, false);
 		healthBar.SetValue(player.health);
 		healthBar.DrawHUD(Vector2Add(player.position, Vector2Scale(player.size, 0.5)));
