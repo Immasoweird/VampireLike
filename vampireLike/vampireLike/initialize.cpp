@@ -177,6 +177,7 @@ void InitGame() {
 
 	weapon.attackDamage = 100;
 
+
 	shoot.resize(MAX_SHOOTS);
 	for (int i = 0; i < MAX_SHOOTS; i++) {
 		shoot[i].position = { 0,0 };
@@ -208,6 +209,7 @@ void InitGame() {
 	InitEnemies(10);
 	if (!spritesLoaded) {
 		LoadTextures();
+		SWORD_ANIMATION = SwordAnimation{ SWORD_TEXTURE,0.2f,0.01f,PI / 6,200 };
 		spritesLoaded = true;
 	}
 
@@ -256,6 +258,9 @@ void LoadTextures() {
 	for (int i = 0; i < MAX_ENEMIES; i++) {
 		enemies[i].enemyWalkTextureLeft = enemyTextureLeft;
 	}
+
+	image3 = LoadImage("assets\\sword.png");
+	SWORD_TEXTURE = LoadTextureFromImage(image3);
 	UnloadImage(image3);
 
 }

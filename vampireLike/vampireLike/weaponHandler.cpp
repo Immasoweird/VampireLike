@@ -13,7 +13,6 @@ void weaponHandler() {
 		}
 		printf("%d", weapon.selectWeapon);
 	}
-
 	if (weapon.selectWeapon == 1) { //sword
 		player.attackAngle = PI / 6;
 		weapon.attackRange = 200;
@@ -25,6 +24,10 @@ void weaponHandler() {
 			Vector2 mouse = GetMousePosition();
 			mouse = Vector2Subtract(Vector2Add(mouse, center), gamestate.camera.offset);
 			Vector2 dir = Vector2Normalize({ mouse.x - center.x,mouse.y - center.y });
+			if(dir.x<0)
+				SWORD_ANIMATION.SetStartAngle(360 - acos((-1)*dir.y)*(180/PI));
+			else
+				SWORD_ANIMATION.SetStartAngle(acos((-1)*dir.y)*(180/PI));
 			Vector2 range = { dir.x * weapon.attackRange,dir.y * weapon.attackRange };
 			Vector2 tangent = Vector2Scale(Vector2Rotate(dir, PI / 2), tan(player.attackAngle) * weapon.attackRange);
 			Vector2 edge = Vector2Add(player_pos, range);
@@ -43,9 +46,13 @@ void weaponHandler() {
 					}
 				}
 			}
+			SWORD_ANIMATION.Play();
 
 			weapon.cooldown = SWORD_ATTACK_COOLDOWN;
 		}
+
+		if (SWORD_ANIMATION.IsPlaying())
+			SWORD_ANIMATION.SetTime(GetFrameTime());
 	}
 	else if (weapon.selectWeapon == 2) { //spear
 		player.attackAngle = PI / 40;

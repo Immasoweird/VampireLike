@@ -27,6 +27,8 @@ Texture2D playerRunTextureRight;
 Texture2D playerRunTextureLeft;
 Texture2D playerIdleTextureRight;
 Texture2D playerIdleTextureLeft;
+Texture2D SWORD_TEXTURE;
 Button upgradeButton;
 std::vector<Stat> gameStats;
 std::vector<Button> buttons;
+SwordAnimation SWORD_ANIMATION;

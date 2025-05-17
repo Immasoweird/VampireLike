@@ -109,12 +109,9 @@ void UpdateGame() {
 
 	weaponHandler();
 
-
-	// ���������� ������ (����� �������� ������)
 	Vector2 desiredTarget = Vector2Add(player.position, Vector2Scale(player.size, 0.5f)); // ����� ������
 	gamestate.camera.target = Vector2Lerp(gamestate.camera.target, desiredTarget, 0.1f); // ������� �������������
 
-	// ����� Lerp �������� ����������� (������):
 	Vector2 minBounds = { -5000, -5000 };            // ����� ������� ���� ������
 	Vector2 maxBounds = { 5000, 5000 };      // ������ ������ ���� ������
 
@@ -126,8 +123,6 @@ void UpdateGame() {
 		minBounds.y + gamestate.camera.offset.y,
 		maxBounds.y - gamestate.camera.offset.y);
 
-
-	// �������� �����������
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		auto playerPosition = player.position;
