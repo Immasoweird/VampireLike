@@ -181,6 +181,11 @@ void DrawShop() {
 	for (auto& button : buttons) {
 		button.Draw();
 	}
+	DrawText(("cost: "+ std::to_string(cost1)).c_str(), 100, SCREEN_HEIGHT / 3.5, 14, YELLOW);
+	DrawText(("cost: " + std::to_string(cost1)).c_str(), 400, SCREEN_HEIGHT / 3.5, 14, YELLOW);
+	DrawText(("cost: " + std::to_string(cost1)).c_str(), 700, SCREEN_HEIGHT / 3.5, 14, YELLOW);
+
+
 	EndDrawing();
 
 }

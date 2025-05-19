@@ -2,6 +2,10 @@
 #include "gameObjects.h"
 
 extern Gamestate gamestate;
+extern int cost1;
+extern int cost2;
+extern int cost3;
+
 extern Player player;
 extern Enemy enemy;
 extern Weapon weapon;

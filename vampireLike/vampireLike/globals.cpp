@@ -12,6 +12,10 @@ bool attack;
 float shootSpeed;
 int waveCount;
 int coins;
+int cost1;
+int cost2;
+int cost3;
+
 int currentScreen;
 Image IdleImage;
 Rectangle PlayerRectangle;

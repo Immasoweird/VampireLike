@@ -10,7 +10,7 @@ Player::Player() {
 	this->position = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	this->damageAura = { {position.x + 50, position.y + 50},200,{position.x + 50, position.y + 50},RED };
 	this->size = { 100,100 };
-	this->speed = 700;
+	this->speed = 400;
 	this->attackRange = 200;
 	this->attackAngle = PI / 6;
 	this->health = 100;
@@ -96,9 +96,11 @@ void InitShop() {
 		{100,SCREEN_HEIGHT/3,200,50}
 	};
 	button.onClick = []() {
-		//if (coins >= cost)
-		weapon.attackDamage += 1000;
-		std::cout << "Bought!" << std::endl;
+		if (gamestate.score >= cost1) {
+			cost1 += 5;
+			weapon.attackDamage += 2;
+			std::cout << "Bought!" << std::endl;
+		}
 	};
 	buttons.push_back(button);
 
@@ -108,8 +110,11 @@ void InitShop() {
 
 	};
 	button1.onClick = []() {
-		player.health += 25;
+		if (gamestate.score >= cost2) {
+			cost2 += 5;
+			player.health += 25;
 		std::cout << "Bought!" << std::endl;
+		}
 		};
 	buttons.push_back(button1);
 
@@ -118,7 +123,11 @@ void InitShop() {
 		{700,SCREEN_HEIGHT / 3,200,50}
 	};
 	button2.onClick = []() {
-		std::cout << "Bought!" << std::endl;
+		if (gamestate.score >= cost3) {
+			cost3 += 5;
+			player.speed += 40;
+			std::cout << "Bought!" << std::endl;
+		}
 		};
 	buttons.push_back(button2);
 
