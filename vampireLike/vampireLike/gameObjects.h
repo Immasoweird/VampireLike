@@ -236,7 +236,7 @@ struct Enemy {
 	Vector2 direction;
 	Color color;
 	bool active;
-	bool isWalkningLeft = false;
+	bool isWalkingLeft = false;
 	float health;
 	float damage;
 	int FrameCounter;

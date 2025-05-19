@@ -121,24 +121,24 @@ void DrawGame() {
 			if (enemies[i].active) {
 				if (enemies[i].direction.x > 0)
 				{
-					enemies[i].isWalkningLeft = false;
+					enemies[i].isWalkingLeft = false;
 					enemies[i].DrawWalkRight();
 				}
 				else if (enemies[i].direction.x < 0)
 				{
-					enemies[i].isWalkningLeft = true;
+					enemies[i].isWalkingLeft = true;
 					enemies[i].DrawWalkLeft();
 				}
 				else if (enemies[i].direction.y > 0)
 				{
-					if (enemies[i].isWalkningLeft)
+					if (enemies[i].isWalkingLeft)
 						enemies[i].DrawWalkLeft();
 					else
 						enemies[i].DrawWalkRight();
 				}
 				else if (enemies[i].direction.y < 0)
 				{
-					if (enemies[i].isWalkningLeft)
+					if (enemies[i].isWalkingLeft)
 						enemies[i].DrawWalkLeft();
 					else
 						enemies[i].DrawWalkRight();
