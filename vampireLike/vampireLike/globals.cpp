@@ -16,12 +16,19 @@ int cost1;
 int cost2;
 int cost3;
 
+
+int count1;
+int count2;
+int count3;
+
 int currentScreen;
 Image IdleImage;
 Rectangle PlayerRectangle;
 int GlobalFrameCounter;
 bool spritesLoaded = false;
 bool isRunningLeft;
+Texture2D backgroundMenu;
+Texture2D backgroundShop;
 Texture2D enemyTextureLeft;
 Texture2D enemyTextureRight;
 Texture2D enemyWalkTextureRight;

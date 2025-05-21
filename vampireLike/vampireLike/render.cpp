@@ -166,7 +166,14 @@ void DrawGame() {
 
 void DrawMenu() {
 	BeginDrawing();
-	ClearBackground(GRAY);
+	DrawTexturePro(
+		backgroundMenu,
+		{ 0, 0, (float)backgroundMenu.width, (float)backgroundMenu.height },
+		{ 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() },
+		{ 0, 0 },
+		0,
+		WHITE
+	);
 
 	for (auto& button : buttons) {
 		button.Draw();
@@ -176,14 +183,25 @@ void DrawMenu() {
 
 void DrawShop() {
 	BeginDrawing();
-	ClearBackground(GREEN);
+	DrawTexturePro(
+		backgroundShop,
+		{ 0, 0, (float)backgroundShop.width, (float)backgroundShop.height }, //  вадрат текстуры
+		{ 0, 0, (float)GetScreenWidth(), (float)GetScreenHeight() },         //  вадрат экрана
+		{ 0, 0 },                                                          // ÷ентр раст€жени€
+		0,                                                               // ”гол поворота
+		WHITE                                                            // ÷вет
+	);
 	
 	for (auto& button : buttons) {
 		button.Draw();
 	}
-	DrawText(("cost: "+ std::to_string(cost1)).c_str(), 100, SCREEN_HEIGHT / 3.5, 14, YELLOW);
-	DrawText(("cost: " + std::to_string(cost1)).c_str(), 400, SCREEN_HEIGHT / 3.5, 14, YELLOW);
-	DrawText(("cost: " + std::to_string(cost1)).c_str(), 700, SCREEN_HEIGHT / 3.5, 14, YELLOW);
+	DrawText(("cost: "+ std::to_string(cost1)).c_str(), 400, SCREEN_HEIGHT / 2.38, 14, YELLOW);
+	DrawText(("cost: " + std::to_string(cost2)).c_str(), 900, SCREEN_HEIGHT / 2.38, 14, YELLOW);
+	DrawText(("cost: " + std::to_string(cost3)).c_str(), 1360, SCREEN_HEIGHT / 2.38, 14, YELLOW);
+
+	DrawText(("count: " + std::to_string(count1)).c_str(), 400, SCREEN_HEIGHT / 2.26, 14, YELLOW);
+	DrawText(("count: " + std::to_string(count2)).c_str(), 900, SCREEN_HEIGHT / 2.26, 14, YELLOW);
+	DrawText(("count: " + std::to_string(count3)).c_str(), 1360, SCREEN_HEIGHT / 2.26, 14, YELLOW);
 
 
 	EndDrawing();

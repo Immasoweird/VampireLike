@@ -37,8 +37,9 @@ struct Button {
 	}
 
 	void Draw() {
-		DrawRectangle(body.x, body.y, body.width, body.height, RED);
-		DrawText(label.c_str(), body.x, body.y, 14, BLACK);
+		Color transparentGray = { 50, 50, 50, 0 };
+		DrawRectangle(body.x, body.y, body.width, body.height, transparentGray);
+		DrawText(label.c_str(), body.x+75, body.y+20, 24, BLACK);
 	}
 };
 

@@ -6,6 +6,10 @@ extern int cost1;
 extern int cost2;
 extern int cost3;
 
+extern int count1;
+extern int count2;
+extern int count3;
+
 extern Player player;
 extern Enemy enemy;
 extern Weapon weapon;
@@ -33,6 +37,10 @@ extern Texture2D playerRunTextureLeft;
 extern Texture2D playerIdleTextureRight;
 extern Texture2D playerIdleTextureLeft;
 extern Texture2D SWORD_TEXTURE;
+extern Texture2D backgroundMenu;
+extern Texture2D backgroundShop;
+
+
 extern std::vector<Stat> gameStats;
 extern std::vector<Button> buttons;
 

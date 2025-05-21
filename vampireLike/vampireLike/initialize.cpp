@@ -91,14 +91,19 @@ void InitEnemies(int enemiesNumber) {
 }
 
 void InitShop() {
+	backgroundShop = LoadTexture("assets\\shop.jpg");
+
 	Button button = {
 		"Damage upgrade",
-		{100,SCREEN_HEIGHT/3,200,50}
+		{100,SCREEN_HEIGHT/3+55,200,50}
 	};
 	button.onClick = []() {
 		if (gamestate.score >= cost1) {
+			gamestate.score -= 5;
 			cost1 += 5;
-			weapon.attackDamage += 2;
+			count1 += 1;
+
+			weapon.attackDamage += 10;
 			std::cout << "Bought!" << std::endl;
 		}
 	};
@@ -106,12 +111,15 @@ void InitShop() {
 
 	Button button1 = {
 		"Health upgrade",
-		{400,SCREEN_HEIGHT / 3,200,50}
+		{600,SCREEN_HEIGHT / 3 + 55,200,50}
 
 	};
 	button1.onClick = []() {
 		if (gamestate.score >= cost2) {
+			gamestate.score -= 5;
 			cost2 += 5;
+			count2 += 1;
+
 			player.health += 25;
 		std::cout << "Bought!" << std::endl;
 		}
@@ -119,12 +127,14 @@ void InitShop() {
 	buttons.push_back(button1);
 
 	Button button2 = {
-		"Item3",
-		{700,SCREEN_HEIGHT / 3,200,50}
+		"Speed up",
+		{1150,SCREEN_HEIGHT / 3 + 55,200,50}
 	};
 	button2.onClick = []() {
 		if (gamestate.score >= cost3) {
+			gamestate.score -= 5;
 			cost3 += 5;
+			count3 += 1;
 			player.speed += 40;
 			std::cout << "Bought!" << std::endl;
 		}
@@ -134,7 +144,7 @@ void InitShop() {
 
 	Button button3 = {
 	"Go on",
-	{SCREEN_WIDTH/2-100,SCREEN_HEIGHT - 100,200,50}
+	{SCREEN_WIDTH/2-50,SCREEN_HEIGHT - 265,200,50}
 	};
 	button3.onClick = []() {
 		currentScreen = 2;
@@ -143,6 +153,8 @@ void InitShop() {
 }
 
 void InitMenu() {
+	backgroundMenu = LoadTexture("assets\\menu.jpg");
+
 	Button start = {
 		"Start",
 		{SCREEN_WIDTH/2-100, SCREEN_HEIGHT/2-150,200,50}
@@ -184,7 +196,7 @@ void InitGame() {
 	gamestate.score = 0;
 	player.lvl = 0;
 
-	weapon.attackDamage = 100;
+	weapon.attackDamage = 20;
 
 
 	shoot.resize(MAX_SHOOTS);
@@ -271,6 +283,9 @@ void LoadTextures() {
 	image3 = LoadImage("assets\\sword.png");
 	SWORD_TEXTURE = LoadTextureFromImage(image3);
 	UnloadImage(image3);
+
+	
+
 
 }
 
